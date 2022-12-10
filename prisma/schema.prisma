@@ -69,8 +69,6 @@ model Member {
     email                           String
     maritalStatus                   Int
     description                     String
-    teams                           Team[]
-    ministries                      Ministry[]
     believeInJesusbelieveDay        DateTime
     firstComeToLEC                  DateTime
     introducedBy                    String
@@ -80,9 +78,18 @@ model Member {
     weddingDate                     DateTime
     giveChildDay                    DateTime
     hometown                        String
+    otherRole                       String?
+
+    cares                           Care[]
+
+    leadTeams                       Team[]
+    leadMinistries                  Ministry[]
+
+    teams                           TeamsMembers[]
+    ministries                      MinistriesMembers[]
+
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?
-    cares                           Care[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -95,6 +102,7 @@ model Team {
     name                            String
     leader                          Member?              @relation(fields: [leaderId], references: [id])
     leaderId                        String?
+    members                         TeamsMembers[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -107,6 +115,7 @@ model Ministry {
     name                            String
     leader                          Member?              @relation(fields: [leaderId], references: [id])
     leaderId                        String?
+    members                         MinistriesMembers[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -129,6 +138,36 @@ model Care {
     createdBy                       String?
     updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
     updatedBy                       String?
+}
+
+model TeamsMembers {
+    member                          Member               @relation(fields: [memberId], references: [id])
+    memberId                        String
+    team                            Team                 @relation(fields: [teamId], references: [id])
+    teamId                          String
+    role                            Int
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+
+    @@id([memberId, teamId])
+}
+
+model MinistriesMembers {
+    member                          Member               @relation(fields: [memberId], references: [id])
+    memberId                        String
+    ministry                        Ministry             @relation(fields: [ministryId], references: [id])
+    ministryId                      String
+    role                            Int
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+
+    @@id([memberId, ministryId])
 }
 
 model AccountsShareCares {
