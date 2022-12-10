@@ -1,12 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { MemberService } from './member.service';
 
-@Controller()
+@Controller('members')
 export class MemberController {
-  constructor(private readonly accountService: MemberService) {}
+  constructor(private readonly memberService: MemberService) {}
 
-  @Get('/member')
-  getMember(): string {
-    return this.accountService.getMember();
+  @Post()
+  createMember() {
+    return this.memberService.create();
+  }
+
+  @Get()
+  getMembers() {
+    return this.memberService.getByFilter();
+  }
+
+  @Get()
+  getMember() {
+    return this.memberService.getOne();
+  }
+
+  @Delete()
+  deleteMember() {
+    return this.memberService.delete();
   }
 }

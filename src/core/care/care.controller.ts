@@ -1,12 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { CareService } from './care.service';
 
 @Controller()
 export class CareController {
-  constructor(private readonly accountService: CareService) {}
+  constructor(private readonly careService: CareService) {}
 
-  @Get('/care')
-  getCare(): string {
-    return this.accountService.getCare();
+  @Post()
+  createCare() {
+    return this.careService.create();
+  }
+
+  @Get()
+  getCares() {
+    return this.careService.getByFilter();
+  }
+
+  @Get()
+  getCare() {
+    return this.careService.getOne();
+  }
+
+  @Delete()
+  deleteCare() {
+    return this.careService.delete();
   }
 }

@@ -1,12 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { FriendService } from './friend.service';
 
 @Controller()
 export class FriendController {
-  constructor(private readonly accountService: FriendService) {}
+  constructor(private readonly friendService: FriendService) {}
 
-  @Get('/friend')
-  getFriend(): string {
-    return this.accountService.getFriend();
+  @Post()
+  createFriend() {
+    return this.friendService.create();
+  }
+
+  @Get()
+  getFriends() {
+    return this.friendService.getByFilter();
+  }
+
+  @Get()
+  getFriend() {
+    return this.friendService.getOne();
+  }
+
+  @Delete()
+  deleteFriend() {
+    return this.friendService.delete();
   }
 }

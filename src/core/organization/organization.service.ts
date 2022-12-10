@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class MemberService {
+export class OrganizationService {
   create() {
+
+  }
+
+  update() {
 
   }
 
@@ -14,11 +18,15 @@ export class MemberService {
 
   }
 
-  update() {
+  getAdmins() {
 
   }
 
-  delete() {
+  addAdmin() {
+
+  }
+
+  deleteAdmin() {
 
   }
 }

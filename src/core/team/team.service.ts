@@ -2,7 +2,35 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class TeamService {
-  getTeam(): string {
-    return 'Hello Team!';
+  create() {
+
+  }
+
+  getByFilter() {
+
+  }
+
+  getOne() {
+
+  }
+
+  update() {
+
+  }
+
+  delete() {
+
+  }
+
+  getMembers() {
+
+  }
+
+  addMember() {
+
+  }
+
+  removeMember () {
+
   }
 }

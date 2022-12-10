@@ -1,12 +1,48 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { MinistryService } from './ministry.service';
 
-@Controller()
+@Controller('ministries')
 export class MinistryController {
-  constructor(private readonly accountService: MinistryService) {}
+  constructor(private readonly ministryService: MinistryService) {}
 
-  @Get('/ministry')
-  getMinistry(): string {
-    return this.accountService.getMinistry();
+  @Post()
+  createMinistry() {
+    return this.ministryService.create();
+  }
+
+  @Get()
+  getMinistries() {
+    return this.ministryService.getByFilter();
+  }
+
+
+  @Get(':id')
+  getMinistry() {
+    return this.ministryService.getOne();
+  }
+
+  @Post(':id')
+  updateMinistry() {
+    return this.ministryService.update();
+  }
+
+  @Post(':id')
+  deleteMinistry() {
+    return this.ministryService.delete();
+  }
+
+  @Get(':id/members')
+  getMembers() {
+    return this.ministryService.getMembers();
+  }
+
+  @Post(':id/members')
+  addMember() {
+    return this.ministryService.addMember();
+  }
+
+  @Delete(':ministryId/members/:memberId')
+  removeMember() {
+    return this.ministryService.removeMember();
   }
 }
