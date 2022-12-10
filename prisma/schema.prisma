@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgres"
+    url      = env("DATABASE_URL")
+}
+
+model Organization {
+    id                              String              @id @default(cuid())
+    name                            String
+    admins                          Account[]
+
+    createdAt                       DateTime            @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime            @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model Account {
+    id                              String               @id @default(cuid())
+    username                        String
+    email                           String?
+    status                          String?
+    globalRole                      String
+    role                            String?
+    oranization                     Organization?        @relation(fields: [oranizationId], references: [id])
+    oranizationId                   String?
+    friends                         Friend[]
+    members                         Member[]
+    cares                           Care[]
+    sharedCares                     AccountsShareCares[]
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model Friend {
+    id                              String               @id @default(cuid())
+    type                            Int
+    name                            String
+    description                     String?
+    email                           String?
+    phone                           String?
+    introducedBy                    String?
+    curator                         Account?             @relation(fields: [curatorId], references: [id])
+    curatorId                       String?
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model Member {
+    id                              String               @id @default(cuid())
+    faithStatus                     Int?
+    name                            String
+    gender                          Int
+    birthday                        DateTime
+    career                          String
+    address                         String
+    email                           String
+    maritalStatus                   Int
+    description                     String
+    teams                           Team[]
+    ministries                      Ministry[]
+    believeInJesusbelieveDay        DateTime
+    firstComeToLEC                  DateTime
+    introducedBy                    String
+    newLifeMentor                   String
+    memberClassDay                  DateTime
+    walkWithGodClassDay             DateTime
+    weddingDate                     DateTime
+    giveChildDay                    DateTime
+    hometown                        String
+    curator                         Account?             @relation(fields: [curatorId], references: [id])
+    curatorId                       String?
+    cares                           Care[]
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model Team {
+    id                              String               @id @default(cuid())
+    name                            String
+    leader                          Member?              @relation(fields: [leaderId], references: [id])
+    leaderId                        String?
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model Ministry {
+    id                              String               @id @default(cuid())
+    name                            String
+    leader                          Member?              @relation(fields: [leaderId], references: [id])
+    leaderId                        String?
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model Care {
+    id                              String               @id @default(cuid())
+    name                            String
+    content                         String
+    quality                         Int
+    curator                         Account              @relation(fields: [curatorId], references: [id])
+    curatorId                       String
+    member                          Member               @relation(fields: [memberId], references: [id])
+    memberId                        String
+    sharedPeople                    AccountsShareCares[]
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+}
+
+model AccountsShareCares {
+    account                         Account              @relation(fields: [accountId], references: [id])
+    accountId                       String
+    care                            Care                 @relation(fields: [careId], references: [id])
+    careId                          String
+    access                          Int
+
+    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
+    createdBy                       String?
+    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
+    updatedBy                       String?
+
+    @@id([accountId, careId])
+}
