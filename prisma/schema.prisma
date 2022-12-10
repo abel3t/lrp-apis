@@ -14,6 +14,11 @@ model Organization {
     id                              String              @id @default(cuid())
     name                            String
     admins                          Account[]
+    friends                         Friend[]
+    members                         Member[]
+    teams                           Team[]
+    ministries                      Ministry[]
+    cares                           Care[]
 
     createdAt                       DateTime            @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -51,6 +56,8 @@ model Friend {
     introducedBy                    String?
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?
+    oranization                     Organization         @relation(fields: [oranizationId], references: [id])
+    oranizationId                   String
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -88,6 +95,8 @@ model Member {
     teams                           TeamsMembers[]
     ministries                      MinistriesMembers[]
 
+    oranization                     Organization        @relation(fields: [oranizationId], references: [id])
+    oranizationId                   String
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?
 
@@ -103,6 +112,8 @@ model Team {
     leader                          Member?              @relation(fields: [leaderId], references: [id])
     leaderId                        String?
     members                         TeamsMembers[]
+    oranization                     Organization         @relation(fields: [oranizationId], references: [id])
+    oranizationId                   String
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -116,6 +127,8 @@ model Ministry {
     leader                          Member?              @relation(fields: [leaderId], references: [id])
     leaderId                        String?
     members                         MinistriesMembers[]
+    oranization                     Organization         @relation(fields: [oranizationId], references: [id])
+    oranizationId                   String
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -132,6 +145,8 @@ model Care {
     curatorId                       String
     member                          Member               @relation(fields: [memberId], references: [id])
     memberId                        String
+    oranization                     Organization        @relation(fields: [oranizationId], references: [id])
+    oranizationId                   String
     sharedPeople                    AccountsShareCares[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
