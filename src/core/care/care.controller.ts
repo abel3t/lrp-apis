@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { CareService } from './care.service';
 
-@Controller()
+@Controller('cares')
 export class CareController {
   constructor(private readonly careService: CareService) {}
 
@@ -15,12 +15,12 @@ export class CareController {
     return this.careService.getByFilter();
   }
 
-  @Get()
+  @Get(':id')
   getCare() {
     return this.careService.getOne();
   }
 
-  @Delete()
+  @Delete(':id')
   deleteCare() {
     return this.careService.delete();
   }

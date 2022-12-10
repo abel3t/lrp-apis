@@ -26,7 +26,7 @@ export class TeamController {
     return this.teamService.update();
   }
 
-  @Post(':id')
+  @Delete(':id')
   deleteTeam() {
     return this.teamService.delete();
   }

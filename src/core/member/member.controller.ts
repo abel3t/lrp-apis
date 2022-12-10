@@ -15,12 +15,12 @@ export class MemberController {
     return this.memberService.getByFilter();
   }
 
-  @Get()
+  @Get(':id')
   getMember() {
     return this.memberService.getOne();
   }
 
-  @Delete()
+  @Delete(':id')
   deleteMember() {
     return this.memberService.delete();
   }

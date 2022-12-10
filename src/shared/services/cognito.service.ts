@@ -44,12 +44,8 @@ export class CognitoService {
     });
   }
 
-  public signUp({ email, password, role }: IAccount): Promise<unknown> {
+  public signUp({ username, password, role }: IAccount): Promise<unknown> {
     const attributeList = [
-      new CognitoUserAttribute({
-        Name: 'email',
-        Value: email
-      }),
       new CognitoUserAttribute({
         Name: 'custom:role',
         Value: role
@@ -57,12 +53,16 @@ export class CognitoService {
       new CognitoUserAttribute({
         Name: 'custom:id',
         Value: '0' // default userId
+      }),
+      new CognitoUserAttribute({
+        Name: 'custom:organizationId',
+        Value: '0' // default userId
       })
     ];
 
     return new Promise((resolve, reject) =>
       this.userPool.signUp(
-        email,
+        username,
         password,
         attributeList,
         undefined,
@@ -74,11 +74,11 @@ export class CognitoService {
           const event = {
             request: {
               userAttributes: {
-                email
+                username
               },
               validationData: {
-                Name: 'email',
-                Value: email
+                Name: 'username',
+                Value: username
               }
             },
             response: {
@@ -88,17 +88,8 @@ export class CognitoService {
 
           const confirmParams = {
             UserPoolId: this.userPoolId,
-            Username: email
+            Username: username
           };
-
-          this.updateUserCognitoAttributes(email, [
-            {
-              Name: 'email_verified',
-              Value: 'true'
-            }
-          ]).catch((error_) => {
-            throw new BadRequestException(error_);
-          });
 
           new CognitoIdentityServiceProvider().adminConfirmSignUp(
             confirmParams,
@@ -108,7 +99,7 @@ export class CognitoService {
               }
 
               // eslint-disable-next-line no-prototype-builtins
-              if (event.request?.userAttributes?.hasOwnProperty('email')) {
+              if (event.request?.userAttributes?.hasOwnProperty('username')) {
                 event.response.autoVerifyEmail = true;
               }
 
@@ -120,13 +111,13 @@ export class CognitoService {
     );
   }
 
-  public signIn(email: string, password: string): Promise<unknown> {
+  public signIn(username: string, password: string): Promise<unknown> {
     const authenticationDetails = new AuthenticationDetails({
-      Username: email,
+      Username: username,
       Password: password
     });
     const userData = {
-      Username: email,
+      Username: username,
       Pool: this.userPool
     };
 
@@ -151,10 +142,10 @@ export class CognitoService {
     });
   }
 
-  public refreshToken(email: string, refreshToken: string): Promise<unknown> {
+  public refreshToken(username: string, refreshToken: string): Promise<unknown> {
     const token = new CognitoRefreshToken({ RefreshToken: refreshToken });
     const cognitoUser = new CognitoUser({
-      Username: email,
+      Username: username,
       Pool: this.userPool
     });
 
@@ -174,9 +165,9 @@ export class CognitoService {
     );
   }
 
-  public signOut(email: string): boolean {
+  public signOut(username: string): boolean {
     const cognitoUser = new CognitoUser({
-      Username: email,
+      Username: username,
       Pool: this.userPool
     });
     cognitoUser.signOut();
@@ -184,7 +175,7 @@ export class CognitoService {
   }
 
   public updateUserCognitoAttributes(
-    email: string,
+    username: string,
     attributes: AttributeType[]
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
@@ -192,7 +183,7 @@ export class CognitoService {
         {
           UserAttributes: attributes,
           UserPoolId: this.userPoolId,
-          Username: email
+          Username: username
         },
         (error) => {
           if (error?.message) {
@@ -209,12 +200,12 @@ export class CognitoService {
     });
   }
 
-  public deleteUser(email: string): Promise<unknown> {
+  public deleteUser(username: string): Promise<unknown> {
     return new Promise((resolve, reject) => {
       new CognitoIdentityServiceProvider().adminDeleteUser(
         {
           UserPoolId: this.userPoolId,
-          Username: email
+          Username: username
         },
         (error) => {
           if (error?.message) {
@@ -230,7 +221,7 @@ export class CognitoService {
 }
 
 interface IAccount {
-  email: string;
+  username: string;
   password: string;
   role: string;
 }

@@ -26,7 +26,7 @@ export class MinistryController {
     return this.ministryService.update();
   }
 
-  @Post(':id')
+  @Delete(':id')
   deleteMinistry() {
     return this.ministryService.delete();
   }

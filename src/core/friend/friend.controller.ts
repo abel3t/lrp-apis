@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { FriendService } from './friend.service';
 
-@Controller()
+@Controller('friends')
 export class FriendController {
   constructor(private readonly friendService: FriendService) {}
 
@@ -15,12 +15,12 @@ export class FriendController {
     return this.friendService.getByFilter();
   }
 
-  @Get()
+  @Get(':id')
   getFriend() {
     return this.friendService.getOne();
   }
 
-  @Delete()
+  @Delete(':id')
   deleteFriend() {
     return this.friendService.delete();
   }
