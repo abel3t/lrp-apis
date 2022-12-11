@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CognitoService } from 'shared/services/cognito.service';
 import { AppConfig } from 'shared/config';
-import { GlobalRole } from './account.enum';
+import { Role } from './account.enum';
 import { PrismaService } from 'shared/services/prisma.service';
 import { CognitoUserAttribute } from 'amazon-cognito-identity-js';
 
@@ -29,13 +29,13 @@ export class AccountService {
       .signUp({
         username,
         password,
-        role: GlobalRole.Global_Admin
+        role: Role.Global_Admin
       })
       .then(async () => {
         const newUser = await this.prisma.account.create({
           data: {
             username,
-            globalRole: GlobalRole.Global_Admin
+            role: Role.Global_Admin
           }
         });
 
@@ -45,8 +45,6 @@ export class AccountService {
             Value: newUser.id
           })
         ]);
-
-        return true;
       })
       .catch((error) => {
         throw new BadRequestException(error, 'createGlobalAdmin');

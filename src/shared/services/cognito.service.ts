@@ -44,7 +44,12 @@ export class CognitoService {
     });
   }
 
-  public signUp({ username, password, role }: IAccount): Promise<unknown> {
+  public signUp({
+    username,
+    password,
+    role,
+    organizationId
+  }: IAccount): Promise<unknown> {
     const attributeList = [
       new CognitoUserAttribute({
         Name: 'custom:role',
@@ -56,7 +61,7 @@ export class CognitoService {
       }),
       new CognitoUserAttribute({
         Name: 'custom:organizationId',
-        Value: '0' // default organizationId
+        Value: organizationId || '0' // default organizationId
       })
     ];
 
@@ -227,4 +232,5 @@ interface IAccount {
   username: string;
   password: string;
   role: string;
+  organizationId?: string;
 }

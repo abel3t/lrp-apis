@@ -1,14 +1,20 @@
 import { BadRequestException, Injectable, Param } from '@nestjs/common';
 import {
+  CreateOrganizationAdminDto,
   CreateOrganizationDto,
   UpdateOrganizationDto
 } from './organization.dto';
-import { PrismaService } from '../../shared/services/prisma.service';
-import { ICurrentAccount } from '../../decorators/account.decorator';
+import { PrismaService } from 'shared/services/prisma.service';
+import { ICurrentAccount } from 'decorators/account.decorator';
+import { CognitoService } from 'shared/services/cognito.service';
+import { CognitoUserAttribute } from 'amazon-cognito-identity-js';
 
 @Injectable()
 export class OrganizationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly cognitoService: CognitoService,
+    private readonly prisma: PrismaService
+  ) {}
 
   private async checkExistedOrganizationName(name: string, selfId?: string) {
     const selfCondition: any = {};
@@ -71,7 +77,53 @@ export class OrganizationService {
     return this.prisma.account.findMany({ where: { organizationId } });
   }
 
-  addAdmin() {}
+  async addAdmin(
+    { id: accountId }: ICurrentAccount,
+    organizationId: string,
+    body: CreateOrganizationAdminDto
+  ) {
+    const [existedAccount, existedOrganization] = await Promise.all([
+      this.prisma.account.findUnique({
+        where: { username: body.username }
+      }),
+      this.prisma.organization.findUnique({
+        where: { id: organizationId }
+      })
+    ]);
+
+    if (existedAccount) {
+      throw new BadRequestException('This username is taken.');
+    }
+
+    if (!existedOrganization) {
+      throw new BadRequestException('Organization is not found.');
+    }
+
+    return this.cognitoService
+      .signUp({
+        ...body,
+        organizationId
+      })
+      .then(async () => {
+        const newUser = await this.prisma.account.create({
+          data: {
+            username: body.username,
+            role: body.role,
+            organization: { connect: { id: organizationId } }
+          }
+        });
+
+        await this.cognitoService.updateUserCognitoAttributes(body.username, [
+          new CognitoUserAttribute({
+            Name: 'custom:id',
+            Value: newUser.id
+          })
+        ]);
+      })
+      .catch((error) => {
+        throw new BadRequestException(error, 'addAdmin');
+      });
+  }
 
   deleteAdmin() {}
 }

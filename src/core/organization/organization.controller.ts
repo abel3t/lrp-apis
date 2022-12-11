@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { OrganizationService } from './organization.service';
 import {
+  CreateOrganizationAdminDto,
   CreateOrganizationDto,
   UpdateOrganizationDto
 } from './organization.dto';
@@ -20,7 +21,7 @@ import {
 import { AuthGuard } from 'guards/auth.guard';
 import { RolesGuard } from 'guards/roles.guard';
 import { Roles } from 'decorators/roles.decorator';
-import { GlobalRole } from '../account/account.enum';
+import { Role } from '../account/account.enum';
 
 @Controller('organizations')
 export class OrganizationController {
@@ -28,7 +29,7 @@ export class OrganizationController {
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
+  @Roles(Role.Global_Admin)
   createOrganization(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: CreateOrganizationDto
@@ -38,7 +39,7 @@ export class OrganizationController {
 
   @Put()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
+  @Roles(Role.Global_Admin)
   updateOrganizations(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: UpdateOrganizationDto
@@ -53,28 +54,32 @@ export class OrganizationController {
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
+  @Roles(Role.Global_Admin)
   getOrganization() {
     return this.organizationService.getOne();
   }
 
   @Get(':id/admins')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
+  @Roles(Role.Global_Admin)
   getOrganizationAdmins(@Param('id') organizationId: string) {
     return this.organizationService.getAdmins(organizationId);
   }
 
   @Post(':id/admins')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
-  addOrganizationAdmin() {
-    return this.organizationService.addAdmin();
+  @Roles(Role.Global_Admin)
+  addOrganizationAdmin(
+    @CurrentAccount() account: ICurrentAccount,
+    @Body() body: CreateOrganizationAdminDto,
+    @Param('id') organizationId: string
+  ) {
+    return this.organizationService.addAdmin(account, organizationId, body);
   }
 
   @Delete(':id/admins/:adminId')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
+  @Roles(Role.Global_Admin)
   deleteOrganizationAdmin() {
     return this.organizationService.deleteAdmin();
   }

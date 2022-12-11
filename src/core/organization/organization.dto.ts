@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Role } from '../account/account.enum';
 
 export class CreateOrganizationDto {
   @IsNotEmpty()
@@ -14,4 +15,18 @@ export class UpdateOrganizationDto {
   @IsOptional()
   @IsString()
   name: string;
+}
+
+export class CreateOrganizationAdminDto {
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
+  @IsNotEmpty()
+  @IsIn(Object.values(Role))
+  role: Role;
 }

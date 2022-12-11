@@ -1,4 +1,7 @@
-export enum GlobalRole {
+export enum Role {
   Global_Admin = 'Global_Admin',
-  Admin = 'Admin'
+  Admin = 'Admin',
+  Pastor = 'Pastor',
+  Deacon = 'Deacon',
+  Staff = 'Staff'
 }

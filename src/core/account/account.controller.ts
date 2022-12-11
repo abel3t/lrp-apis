@@ -3,7 +3,7 @@ import { AccountService } from './account.service';
 import { CreateGlobalAdminDto, LoginDto } from './account.dto';
 import { AuthGuard } from 'guards/auth.guard';
 import { Roles } from 'decorators/roles.decorator';
-import { GlobalRole } from './account.enum';
+import { Role } from './account.enum';
 import { RolesGuard } from 'guards/roles.guard';
 import { CurrentAccount, ICurrentAccount } from 'decorators/account.decorator';
 
@@ -26,7 +26,7 @@ export class AccountController {
 
   @Get('/profile')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(GlobalRole.Global_Admin)
+  @Roles(Role.Global_Admin)
   getAccount(@CurrentAccount() { username }: ICurrentAccount) {
     return this.accountService.getAccount(username);
   }

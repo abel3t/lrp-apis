@@ -28,11 +28,10 @@ model Organization {
 
 model Account {
     id                              String               @id @default(cuid())
-    username                        String
+    username                        String               @unique
     email                           String?
     status                          String?
-    globalRole                      String
-    role                            String?
+    role                            String
     organization                    Organization?        @relation(fields: [organizationId], references: [id])
     organizationId                  String?
     friends                         Friend[]
