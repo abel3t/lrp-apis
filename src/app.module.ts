@@ -6,6 +6,7 @@ import { FriendModule } from './core/friend/friend.module';
 import { MemberModule } from './core/member/member.module';
 import { MinistryModule } from './core/ministry/ministry.module';
 import { TeamModule } from './core/team/team.module';
+import { JwtStrategy } from './strategies/passport.jwt.strategy';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { TeamModule } from './core/team/team.module';
     TeamModule
   ],
   controllers: [AppController],
-  providers: []
+  providers: [JwtStrategy]
 })
 export class AppModule {}

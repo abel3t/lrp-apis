@@ -1,6 +1,11 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateGlobalAdminDto, LoginDto } from './account.dto';
+import { AuthGuard } from 'guards/auth.guard';
+import { Roles } from 'decorators/roles.decorator';
+import { GlobalRole } from './account.enum';
+import { RolesGuard } from 'guards/roles.guard';
+import { CurrentAccount, ICurrentAccount } from 'decorators/account.decorator';
 
 @Controller()
 export class AccountController {
@@ -22,7 +27,11 @@ export class AccountController {
   }
 
   @Get('/profile')
-  getAccount(): string {
-    return this.accountService.getAccount();
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
+  getAccount(
+    @CurrentAccount() { username }: ICurrentAccount
+  ) {
+    return this.accountService.getAccount(username);
   }
 }

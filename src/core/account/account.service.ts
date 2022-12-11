@@ -48,7 +48,7 @@ export class AccountService {
     return this.cognitoService.signIn(username, password);
   }
 
-  getAccount(): string {
-    return 'Hello Account!';
+  async getAccount(username: string) {
+    return this.prisma.account.findFirst({ where: { username }});
   }
 }
