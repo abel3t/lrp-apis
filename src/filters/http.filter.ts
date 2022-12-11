@@ -1,4 +1,9 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { FastifyReply } from 'fastify';
 
@@ -13,13 +18,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const message = (exception?.getResponse() as any)?.message;
     const error = typeof message === 'object' ? message[0] : message;
 
-    response
-      .status(status)
-      .send({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        error
-      });
+    response.status(status).send({
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      error
+    });
   }
 }

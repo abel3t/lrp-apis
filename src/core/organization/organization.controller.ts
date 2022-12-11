@@ -1,13 +1,48 @@
-import { Controller, Delete, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseGuards
+} from '@nestjs/common';
 import { OrganizationService } from './organization.service';
+import {
+  CreateOrganizationDto,
+  UpdateOrganizationDto
+} from './organization.dto';
+import {
+  CurrentAccount,
+  ICurrentAccount
+} from '../../decorators/account.decorator';
+import { AuthGuard } from 'guards/auth.guard';
+import { RolesGuard } from 'guards/roles.guard';
+import { Roles } from 'decorators/roles.decorator';
+import { GlobalRole } from '../account/account.enum';
 
 @Controller('organizations')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 
   @Post()
-  createOrganization() {
-    return this.organizationService.create();
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
+  createOrganization(
+    @CurrentAccount() account: ICurrentAccount,
+    @Body() body: CreateOrganizationDto
+  ) {
+    return this.organizationService.create(account, body);
+  }
+
+  @Put()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
+  updateOrganizations(
+    @CurrentAccount() account: ICurrentAccount,
+    @Body() body: UpdateOrganizationDto
+  ) {
+    return this.organizationService.update(account, body);
   }
 
   @Get()
@@ -25,12 +60,12 @@ export class OrganizationController {
     return this.organizationService.getAdmins();
   }
 
-  @Post()
+  @Post(':id/admins')
   addOrganizationAdmin() {
     return this.organizationService.addAdmin();
   }
 
-  @Delete()
+  @Delete(':id/admins/:adminId')
   deleteOrganizationAdmin() {
     return this.organizationService.deleteAdmin();
   }

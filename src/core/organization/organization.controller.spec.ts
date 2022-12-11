@@ -10,12 +10,16 @@ describe('OrganizationController', () => {
       providers: [OrganizationController, OrganizationService]
     }).compile();
 
-    organizationController = app.get<OrganizationController>(OrganizationController);
+    organizationController = app.get<OrganizationController>(
+      OrganizationController
+    );
   });
 
   describe('root', () => {
     it('should return "Hello Organization!"', () => {
-      expect(organizationController.getOrganization()).toBe('Hello Organization!');
+      expect(organizationController.getOrganization()).toBe(
+        'Hello Organization!'
+      );
     });
   });
 });

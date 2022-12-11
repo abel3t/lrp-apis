@@ -20,18 +20,14 @@ export class AccountController {
   }
 
   @Post('login')
-  login(
-    @Body() body: LoginDto
-  ) {
+  login(@Body() body: LoginDto) {
     return this.accountService.login(body);
   }
 
   @Get('/profile')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(GlobalRole.Global_Admin)
-  getAccount(
-    @CurrentAccount() { username }: ICurrentAccount
-  ) {
+  getAccount(@CurrentAccount() { username }: ICurrentAccount) {
     return this.accountService.getAccount(username);
   }
 }

@@ -142,7 +142,10 @@ export class CognitoService {
     });
   }
 
-  public refreshToken(username: string, refreshToken: string): Promise<unknown> {
+  public refreshToken(
+    username: string,
+    refreshToken: string
+  ): Promise<unknown> {
     const token = new CognitoRefreshToken({ RefreshToken: refreshToken });
     const cognitoUser = new CognitoUser({
       Username: username,

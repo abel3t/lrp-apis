@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable
+} from '@nestjs/common';
 import { CognitoService } from 'shared/services/cognito.service';
 import { AppConfig } from 'shared/config';
 import { GlobalRole } from './account.enum';
@@ -15,32 +19,37 @@ export class AccountService {
   createGlobalAdmin({ username, password, secretKey }) {
     const appSecretKey = AppConfig.APP.CREATE_ACCOUNT_SECRET_KEY;
     if (secretKey !== appSecretKey) {
-      throw new ForbiddenException('You can not access this API.', 'createGlobalAdmin');
+      throw new ForbiddenException(
+        'You can not access this API.',
+        'createGlobalAdmin'
+      );
     }
 
-    return this.cognitoService.signUp({
-      username,
-      password,
-      role: GlobalRole.Global_Admin
-    }).then(async () => {
-      const newUser = await this.prisma.account.create({
-        data: {
-          username,
-          globalRole: GlobalRole.Global_Admin
-        }
-      });
+    return this.cognitoService
+      .signUp({
+        username,
+        password,
+        role: GlobalRole.Global_Admin
+      })
+      .then(async () => {
+        const newUser = await this.prisma.account.create({
+          data: {
+            username,
+            globalRole: GlobalRole.Global_Admin
+          }
+        });
 
-      await this.cognitoService.updateUserCognitoAttributes(username, [
-        new CognitoUserAttribute({
-          Name: 'custom:id',
-          Value: newUser.id
-        }),
-      ]);
+        await this.cognitoService.updateUserCognitoAttributes(username, [
+          new CognitoUserAttribute({
+            Name: 'custom:id',
+            Value: newUser.id
+          })
+        ]);
 
-      return true;
-    })
+        return true;
+      })
       .catch((error) => {
-        throw new BadRequestException(error, 'createGlobalAdmin')
+        throw new BadRequestException(error, 'createGlobalAdmin');
       });
   }
 
@@ -49,6 +58,6 @@ export class AccountService {
   }
 
   async getAccount(username: string) {
-    return this.prisma.account.findFirst({ where: { username }});
+    return this.prisma.account.findFirst({ where: { username } });
   }
 }

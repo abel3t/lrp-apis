@@ -31,5 +31,3 @@ $ pnpm test:e2e
 # test coverage
 $ pnpm test:cov
 ```
-
-

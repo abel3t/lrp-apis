@@ -2,23 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CareService {
-  create() {
+  create() {}
 
-  }
+  getByFilter() {}
 
-  getByFilter() {
+  getOne() {}
 
-  }
+  update() {}
 
-  getOne() {
-
-  }
-
-  update() {
-
-  }
-
-  delete() {
-
-  }
+  delete() {}
 }

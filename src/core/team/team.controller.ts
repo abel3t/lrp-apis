@@ -15,7 +15,6 @@ export class TeamController {
     return this.teamService.getByFilter();
   }
 
-
   @Get(':id')
   getTeam() {
     return this.teamService.getOne();

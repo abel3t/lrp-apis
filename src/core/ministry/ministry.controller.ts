@@ -15,7 +15,6 @@ export class MinistryController {
     return this.ministryService.getByFilter();
   }
 
-
   @Get(':id')
   getMinistry() {
     return this.ministryService.getOne();

@@ -7,6 +7,7 @@ import { MemberModule } from './core/member/member.module';
 import { MinistryModule } from './core/ministry/ministry.module';
 import { TeamModule } from './core/team/team.module';
 import { JwtStrategy } from './strategies/passport.jwt.strategy';
+import { OrganizationModule } from './core/organization/organization.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { JwtStrategy } from './strategies/passport.jwt.strategy';
     FriendModule,
     MemberModule,
     MinistryModule,
-    TeamModule
+    TeamModule,
+    OrganizationModule
   ],
   controllers: [AppController],
   providers: [JwtStrategy]
