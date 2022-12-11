@@ -52,11 +52,11 @@ export class CognitoService {
       }),
       new CognitoUserAttribute({
         Name: 'custom:id',
-        Value: '0' // default userId
+        Value: '0' // default accountId
       }),
       new CognitoUserAttribute({
         Name: 'custom:organizationId',
-        Value: '0' // default userId
+        Value: '0' // default organizationId
       })
     ];
 

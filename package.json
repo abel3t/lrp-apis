@@ -30,7 +30,10 @@
     "@prisma/client": "^4.5.0",
     "amazon-cognito-identity-js": "^5.2.12",
     "aws-sdk": "^2.1246.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "dotenv": "^16.0.3",
+    "fastify": "^4.10.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
