@@ -33,8 +33,8 @@ model Account {
     status                          String?
     globalRole                      String
     role                            String?
-    oranization                     Organization?        @relation(fields: [oranizationId], references: [id])
-    oranizationId                   String?
+    organization                    Organization?        @relation(fields: [organizationId], references: [id])
+    organizationId                  String?
     friends                         Friend[]
     members                         Member[]
     cares                           Care[]
@@ -56,8 +56,8 @@ model Friend {
     introducedBy                    String?
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?
-    oranization                     Organization         @relation(fields: [oranizationId], references: [id])
-    oranizationId                   String
+    organization                    Organization         @relation(fields: [organizationId], references: [id])
+    organizationId                  String
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -95,8 +95,8 @@ model Member {
     teams                           TeamsMembers[]
     ministries                      MinistriesMembers[]
 
-    oranization                     Organization        @relation(fields: [oranizationId], references: [id])
-    oranizationId                   String
+    organization                    Organization         @relation(fields: [organizationId], references: [id])
+    organizationId                  String
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?
 
@@ -112,8 +112,8 @@ model Team {
     leader                          Member?              @relation(fields: [leaderId], references: [id])
     leaderId                        String?
     members                         TeamsMembers[]
-    oranization                     Organization         @relation(fields: [oranizationId], references: [id])
-    oranizationId                   String
+    organization                    Organization         @relation(fields: [organizationId], references: [id])
+    organizationId                  String
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -127,8 +127,8 @@ model Ministry {
     leader                          Member?              @relation(fields: [leaderId], references: [id])
     leaderId                        String?
     members                         MinistriesMembers[]
-    oranization                     Organization         @relation(fields: [oranizationId], references: [id])
-    oranizationId                   String
+    organization                    Organization         @relation(fields: [organizationId], references: [id])
+    organizationId                  String
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -145,8 +145,8 @@ model Care {
     curatorId                       String
     member                          Member               @relation(fields: [memberId], references: [id])
     memberId                        String
-    oranization                     Organization        @relation(fields: [oranizationId], references: [id])
-    oranizationId                   String
+    organization                    Organization         @relation(fields: [organizationId], references: [id])
+    organizationId                  String
     sharedPeople                    AccountsShareCares[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)

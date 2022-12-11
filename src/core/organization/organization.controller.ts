@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   UseGuards
@@ -51,21 +52,29 @@ export class OrganizationController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
   getOrganization() {
     return this.organizationService.getOne();
   }
 
   @Get(':id/admins')
-  getOrganizationAdmins() {
-    return this.organizationService.getAdmins();
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
+  getOrganizationAdmins(@Param('id') organizationId: string) {
+    return this.organizationService.getAdmins(organizationId);
   }
 
   @Post(':id/admins')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
   addOrganizationAdmin() {
     return this.organizationService.addAdmin();
   }
 
   @Delete(':id/admins/:adminId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(GlobalRole.Global_Admin)
   deleteOrganizationAdmin() {
     return this.organizationService.deleteAdmin();
   }

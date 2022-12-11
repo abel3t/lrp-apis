@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Param } from '@nestjs/common';
 import {
   CreateOrganizationDto,
   UpdateOrganizationDto
@@ -67,7 +67,9 @@ export class OrganizationService {
 
   getOne() {}
 
-  getAdmins() {}
+  getAdmins(organizationId: string) {
+    return this.prisma.account.findMany({ where: { organizationId } });
+  }
 
   addAdmin() {}
 
