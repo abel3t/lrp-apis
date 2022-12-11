@@ -1,14 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { ICurrentAccount } from '../../decorators/account.decorator';
+import { PrismaService } from '../../shared/services/prisma.service';
+import { CreateFriendDto, UpdateFriendDto } from './friend.dto';
 
 @Injectable()
 export class FriendService {
-  create() {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  getByFilter() {}
+  async create(
+    { id: accountId, organizationId }: ICurrentAccount,
+    body: CreateFriendDto
+  ) {
+    await this.prisma.friend.create({
+      data: {
+        ...body,
+        organization: { connect: { id: organizationId } },
+        createdBy: accountId
+      }
+    });
+  }
+
+  getByFilter({ organizationId }: ICurrentAccount) {
+    return this.prisma.friend.findMany({ where: { organizationId } });
+  }
 
   getOne() {}
 
-  update() {}
+  async update(
+    { id: accountId, organizationId }: ICurrentAccount,
+    friendId: string,
+    body: UpdateFriendDto
+  ) {
+    const existedFriend = await this.prisma.friend.findUnique({
+      where: { id: friendId }
+    });
+    if (!existedFriend) {
+      throw new BadRequestException('This friend is not found.');
+    }
+
+    await this.prisma.friend.update({
+      where: { id: friendId },
+      data: { ...body, updatedBy: accountId }
+    });
+  }
 
   delete() {}
 }

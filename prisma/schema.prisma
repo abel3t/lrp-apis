@@ -52,6 +52,7 @@ model Friend {
     description                     String?
     email                           String?
     phone                           String?
+    address                         String?
     introducedBy                    String?
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?
@@ -68,22 +69,22 @@ model Member {
     id                              String               @id @default(cuid())
     faithStatus                     Int?
     name                            String
-    gender                          Int
-    birthday                        DateTime
-    career                          String
-    address                         String
-    email                           String
-    maritalStatus                   Int
-    description                     String
-    believeInJesusbelieveDay        DateTime
-    firstComeToLEC                  DateTime
-    introducedBy                    String
-    newLifeMentor                   String
-    memberClassDay                  DateTime
-    walkWithGodClassDay             DateTime
-    weddingDate                     DateTime
-    giveChildDay                    DateTime
-    hometown                        String
+    gender                          String?
+    birthday                        DateTime?
+    career                          String?
+    address                         String?
+    email                           String?
+    maritalStatus                   String?
+    description                     String?
+    believeInJesusDay        DateTime?
+    firstComeToLEC                  DateTime?
+    introducedBy                    String?
+    newLifeMentor                   String?
+    memberClassDay                  DateTime?
+    walkWithGodClassDay             DateTime?
+    weddingDate                     DateTime?
+    giveChildDay                    DateTime?
+    hometown                        String?
     otherRole                       String?
 
     cares                           Care[]
@@ -137,7 +138,6 @@ model Ministry {
 
 model Care {
     id                              String               @id @default(cuid())
-    name                            String
     content                         String
     quality                         Int
     curator                         Account              @relation(fields: [curatorId], references: [id])
