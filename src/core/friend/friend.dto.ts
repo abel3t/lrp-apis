@@ -1,4 +1,10 @@
-import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString
+} from 'class-validator';
 import { FriendType } from './friend.enum';
 
 export class CreateFriendDto {

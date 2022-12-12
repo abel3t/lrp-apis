@@ -1,10 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards
+} from '@nestjs/common';
 import { FriendService } from './friend.service';
 import { AuthGuard } from '../../guards/auth.guard';
 import { RolesGuard } from '../../guards/roles.guard';
 import { Roles } from '../../decorators/roles.decorator';
 import { Role } from '../account/account.enum';
-import { CurrentAccount, ICurrentAccount } from '../../decorators/account.decorator';
+import {
+  CurrentAccount,
+  ICurrentAccount
+} from '../../decorators/account.decorator';
 import { CreateFriendDto, UpdateFriendDto } from './friend.dto';
 
 @Controller('friends')

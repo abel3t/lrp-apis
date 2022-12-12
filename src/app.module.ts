@@ -8,9 +8,11 @@ import { MinistryModule } from './core/ministry/ministry.module';
 import { TeamModule } from './core/team/team.module';
 import { JwtStrategy } from './strategies/passport.jwt.strategy';
 import { OrganizationModule } from './core/organization/organization.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
+    SharedModule,
     AccountModule,
     CareModule,
     FriendModule,
@@ -20,6 +22,7 @@ import { OrganizationModule } from './core/organization/organization.module';
     OrganizationModule
   ],
   controllers: [AppController],
-  providers: [JwtStrategy]
+  providers: [JwtStrategy],
+  exports: []
 })
 export class AppModule {}

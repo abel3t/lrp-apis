@@ -6,12 +6,16 @@ import {
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './filters/http.filter';
+import { PrismaService } from './shared/services/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter()
   );
+
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app)
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
