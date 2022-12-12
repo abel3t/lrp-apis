@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { CreateGlobalAdminDto, LoginDto } from './account.dto';
+import { CreateGlobalAdminDto, LoginDto, RefreshTokenDto } from './account.dto';
 import { AuthGuard } from 'guards/auth.guard';
 import { Roles } from 'decorators/roles.decorator';
 import { Role } from './account.enum';
@@ -22,6 +22,14 @@ export class AccountController {
   @Post('login')
   login(@Body() body: LoginDto) {
     return this.accountService.login(body);
+  }
+
+
+  @Post('/refresh-token')
+  refreshToken(
+    @Body() body: RefreshTokenDto,
+  ) {
+    return this.accountService.refreshToken(body);
   }
 
   @Get('/profile')

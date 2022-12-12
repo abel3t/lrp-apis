@@ -23,9 +23,17 @@ export class MinistryService {
   getByFilter({ organizationId }: ICurrentAccount) {
     return this.prisma.ministry.findMany({ where: { organizationId } });
   }
+  
+  async getOne({ organizationId }: ICurrentAccount, memberId: string) {
+    const existedMinistry = await this.prisma.member.findFirst({ where: { id: memberId, organization: { id: organizationId }}});
 
-  getOne() {}
+    if (!existedMinistry) {
+      throw new BadRequestException('Ministry is not found.');
+    }
 
+    return existedMinistry;
+  }
+  
   async update(
     { id: accountId, organizationId }: ICurrentAccount,
     ministryId: string,

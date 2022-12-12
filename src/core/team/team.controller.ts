@@ -51,9 +51,13 @@ export class TeamController {
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getTeam() {
-    return this.teamService.getOne();
+  getMember(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') teamId: string
+  ) {
+    return this.teamService.getOne(account, teamId);
   }
+
 
   @Delete(':id')
   deleteTeam() {

@@ -24,7 +24,15 @@ export class FriendService {
     return this.prisma.friend.findMany({ where: { organizationId } });
   }
 
-  getOne() {}
+  async getOne({ organizationId }: ICurrentAccount, memberId: string) {
+    const existedFriend = await this.prisma.member.findFirst({ where: { id: memberId, organization: { id: organizationId }}});
+
+    if (!existedFriend) {
+      throw new BadRequestException('Friend is not found.');
+    }
+
+    return existedFriend;
+  }
 
   async update(
     { id: accountId, organizationId }: ICurrentAccount,

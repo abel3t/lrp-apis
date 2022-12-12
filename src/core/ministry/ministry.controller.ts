@@ -44,15 +44,18 @@ export class MinistryController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getMinistrys(@CurrentAccount() account: ICurrentAccount) {
+  getMinistries(@CurrentAccount() account: ICurrentAccount) {
     return this.ministryService.getByFilter(account);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getMinistry() {
-    return this.ministryService.getOne();
+  getMember(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') friendId: string
+  ) {
+    return this.ministryService.getOne(account, friendId);
   }
 
   @Delete(':id')

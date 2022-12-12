@@ -8,6 +8,7 @@ import { AppConfig } from 'shared/config';
 import { Role } from './account.enum';
 import { PrismaService } from 'shared/services/prisma.service';
 import { CognitoUserAttribute } from 'amazon-cognito-identity-js';
+import { RefreshTokenDto } from './account.dto';
 
 @Injectable()
 export class AccountService {
@@ -52,7 +53,30 @@ export class AccountService {
   }
 
   login({ username, password }) {
-    return this.cognitoService.signIn(username, password);
+    return this.cognitoService.signIn(username, password)
+      .then(async (data) => {
+        const account = await this.prisma.account.findUnique({ where: { username }});
+
+        if (!account) {
+          throw new BadRequestException('Username or Password is invalid.')
+        }
+
+        return {
+          accessToken: data,
+          userData: account
+        }
+      })
+      .catch(error => {
+        throw new BadRequestException(error, 'refreshToken')
+      });
+  }
+
+  refreshToken({ username, refreshToken }: RefreshTokenDto) {
+    return this.cognitoService.refreshToken(username, refreshToken)
+      .then((data) => data)
+      .catch(error => {
+        throw new BadRequestException(error, 'refreshToken')
+      });
   }
 
   async getAccount(username: string) {

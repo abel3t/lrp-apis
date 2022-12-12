@@ -24,7 +24,15 @@ export class MemberService {
     return this.prisma.member.findMany({ where: { organizationId } });
   }
 
-  getOne() {}
+  async getOne({ organizationId }: ICurrentAccount, memberId: string) {
+    const existedMember = await this.prisma.member.findFirst({ where: { id: memberId, organization: { id: organizationId }}});
+
+    if (!existedMember) {
+      throw new BadRequestException('Member is not found.');
+    }
+
+    return existedMember;
+  }
 
   async update(
     { id: accountId, organizationId }: ICurrentAccount,

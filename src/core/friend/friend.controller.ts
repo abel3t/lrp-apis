@@ -54,8 +54,11 @@ export class FriendController {
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getFriend() {
-    return this.friendService.getOne();
+  getMember(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') friendId: string
+  ) {
+    return this.friendService.getOne(account, friendId);
   }
 
   @Delete(':id')

@@ -14,11 +14,12 @@ async function bootstrap() {
     new FastifyAdapter()
   );
 
-  const prismaService = app.get(PrismaService);
-  await prismaService.enableShutdownHooks(app)
-
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app)
 
   await app.listen(8080, '0.0.0.0');
 }

@@ -51,8 +51,11 @@ export class MemberController {
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getMember() {
-    return this.memberService.getOne();
+  getMember(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') memberId: string
+  ) {
+    return this.memberService.getOne(account, memberId);
   }
 
   @Delete(':id')
