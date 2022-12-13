@@ -19,7 +19,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const prismaService = app.get(PrismaService);
-  await prismaService.enableShutdownHooks(app)
+  await prismaService.enableShutdownHooks(app);
 
   await app.listen(8080, '0.0.0.0');
 }

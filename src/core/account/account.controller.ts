@@ -24,11 +24,8 @@ export class AccountController {
     return this.accountService.login(body);
   }
 
-
   @Post('/refresh-token')
-  refreshToken(
-    @Body() body: RefreshTokenDto,
-  ) {
+  refreshToken(@Body() body: RefreshTokenDto) {
     return this.accountService.refreshToken(body);
   }
 

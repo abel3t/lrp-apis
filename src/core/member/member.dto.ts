@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { Gender, MaritalStatus } from './member.enum';
+import { DiscipleshipProcess, Gender, MaritalStatus } from './member.enum';
 
 export class CreateMemberDto {
   @IsNotEmpty()
@@ -17,6 +17,14 @@ export class CreateMemberDto {
   @IsOptional()
   @IsString()
   career?: string;
+
+  @IsOptional()
+  @IsString()
+  discipleshipProcess?: DiscipleshipProcess;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
   @IsOptional()
   @IsString()
@@ -91,6 +99,14 @@ export class UpdateMemberDto {
   @IsOptional()
   @IsString()
   career?: string;
+
+  @IsOptional()
+  @IsString()
+  discipleshipProcess?: DiscipleshipProcess;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
   @IsOptional()
   @IsString()

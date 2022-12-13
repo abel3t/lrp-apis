@@ -25,7 +25,9 @@ export class MemberService {
   }
 
   async getOne({ organizationId }: ICurrentAccount, memberId: string) {
-    const existedMember = await this.prisma.member.findFirst({ where: { id: memberId, organization: { id: organizationId }}});
+    const existedMember = await this.prisma.member.findFirst({
+      where: { id: memberId, organization: { id: organizationId } }
+    });
 
     if (!existedMember) {
       throw new BadRequestException('Member is not found.');

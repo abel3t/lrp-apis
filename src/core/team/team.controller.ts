@@ -58,7 +58,6 @@ export class TeamController {
     return this.teamService.getOne(account, teamId);
   }
 
-
   @Delete(':id')
   deleteTeam() {
     return this.teamService.delete();

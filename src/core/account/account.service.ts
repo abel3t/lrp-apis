@@ -53,29 +53,33 @@ export class AccountService {
   }
 
   login({ username, password }) {
-    return this.cognitoService.signIn(username, password)
+    return this.cognitoService
+      .signIn(username, password)
       .then(async (data) => {
-        const account = await this.prisma.account.findUnique({ where: { username }});
+        const account = await this.prisma.account.findUnique({
+          where: { username }
+        });
 
         if (!account) {
-          throw new BadRequestException('Username or Password is invalid.')
+          throw new BadRequestException('Username or Password is invalid.');
         }
 
         return {
           accessToken: data,
           userData: account
-        }
+        };
       })
-      .catch(error => {
-        throw new BadRequestException(error, 'refreshToken')
+      .catch((error) => {
+        throw new BadRequestException(error, 'refreshToken');
       });
   }
 
   refreshToken({ username, refreshToken }: RefreshTokenDto) {
-    return this.cognitoService.refreshToken(username, refreshToken)
+    return this.cognitoService
+      .refreshToken(username, refreshToken)
       .then((data) => data)
-      .catch(error => {
-        throw new BadRequestException(error, 'refreshToken')
+      .catch((error) => {
+        throw new BadRequestException(error, 'refreshToken');
       });
   }
 

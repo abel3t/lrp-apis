@@ -69,6 +69,7 @@ model Member {
     id                              String               @id @default(cuid())
     faithStatus                     Int?
     name                            String
+    phone                           String?
     gender                          String?
     birthday                        DateTime?
     career                          String?
@@ -76,7 +77,8 @@ model Member {
     email                           String?
     maritalStatus                   String?
     description                     String?
-    believeInJesusDay        DateTime?
+    discipleshipProcess             String?
+    believeInJesusDay               DateTime?
     firstComeToLEC                  DateTime?
     introducedBy                    String?
     newLifeMentor                   String?
@@ -138,8 +140,9 @@ model Ministry {
 
 model Care {
     id                              String               @id @default(cuid())
-    content                         String
-    quality                         Int
+    description                     String
+    priority                        String
+    type                            String
     curator                         Account              @relation(fields: [curatorId], references: [id])
     curatorId                       String
     member                          Member               @relation(fields: [memberId], references: [id])
