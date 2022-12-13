@@ -24,9 +24,9 @@ export class MinistryService {
     return this.prisma.ministry.findMany({ where: { organizationId } });
   }
 
-  async getOne({ organizationId }: ICurrentAccount, memberId: string) {
-    const existedMinistry = await this.prisma.member.findFirst({
-      where: { id: memberId, organization: { id: organizationId } }
+  async getOne({ organizationId }: ICurrentAccount, ministryId: string) {
+    const existedMinistry = await this.prisma.ministry.findFirst({
+      where: { id: ministryId, organization: { id: organizationId } }
     });
 
     if (!existedMinistry) {

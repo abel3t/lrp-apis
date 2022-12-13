@@ -24,9 +24,9 @@ export class TeamService {
     return this.prisma.team.findMany({ where: { organizationId } });
   }
 
-  async getOne({ organizationId }: ICurrentAccount, memberId: string) {
-    const existedTeam = await this.prisma.member.findFirst({
-      where: { id: memberId, organization: { id: organizationId } }
+  async getOne({ organizationId }: ICurrentAccount, teamId: string) {
+    const existedTeam = await this.prisma.team.findFirst({
+      where: { id: teamId, organization: { id: organizationId } }
     });
 
     if (!existedTeam) {
