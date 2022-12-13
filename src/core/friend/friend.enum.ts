@@ -1,7 +1,7 @@
 export enum FriendType {
-  unbeliever,
-  friend,
-  nextStep,
-  newLife,
-  walkWithGodClass
+  Unbeliever = 'Unbeliever',
+  Friend = 'Friend',
+  NextStep = 'NextStep',
+  NewLife = 'NewLife',
+  AWalkWithGodClass = 'WalkWithGodClass'
 }

@@ -13,7 +13,7 @@ export class CreateFriendDto {
   name: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   @IsIn(Object.values(FriendType))
   type: FriendType;
 
@@ -31,6 +31,18 @@ export class CreateFriendDto {
 
   @IsOptional()
   @IsString()
+  gender?: string;
+
+  @IsOptional()
+  @IsString()
+  hometown?: string;
+
+  @IsOptional()
+  @IsString()
+  birthday?: Date;
+
+  @IsOptional()
+  @IsString()
   introducedBy?: string;
 }
 
@@ -40,7 +52,7 @@ export class UpdateFriendDto {
   name?: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsString()
   type?: FriendType;
 
   @IsOptional()

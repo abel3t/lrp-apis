@@ -47,12 +47,15 @@ model Account {
 
 model Friend {
     id                              String               @id @default(cuid())
-    type                            Int
-    name                            String
+    type                            String?
+    name                            String?
     description                     String?
     email                           String?
     phone                           String?
     address                         String?
+    gender                          String?
+    hometown                        String?
+    birthday                        DateTime?
     introducedBy                    String?
     curator                         Account?             @relation(fields: [curatorId], references: [id])
     curatorId                       String?

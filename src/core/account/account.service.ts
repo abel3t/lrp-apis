@@ -57,7 +57,12 @@ export class AccountService {
       .signIn(username, password)
       .then(async (data) => {
         const account = await this.prisma.account.findUnique({
-          where: { username }
+          where: { username },
+          select: {
+            id: true,
+            username: true,
+            role: true
+          }
         });
 
         if (!account) {
@@ -66,7 +71,7 @@ export class AccountService {
 
         return {
           accessToken: data,
-          userData: account
+          user: account
         };
       })
       .catch((error) => {
@@ -77,7 +82,25 @@ export class AccountService {
   refreshToken({ username, refreshToken }: RefreshTokenDto) {
     return this.cognitoService
       .refreshToken(username, refreshToken)
-      .then((data) => data)
+      .then(async (data) => {
+        const account = await this.prisma.account.findUnique({
+          where: { username },
+          select: {
+            id: true,
+            username: true,
+            role: true
+          }
+        });
+
+        if (!account) {
+          throw new BadRequestException('Username or Password is invalid.');
+        }
+
+        return {
+          accessToken: data,
+          user: account
+        };
+      })
       .catch((error) => {
         throw new BadRequestException(error, 'refreshToken');
       });
