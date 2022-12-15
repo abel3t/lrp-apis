@@ -64,4 +64,14 @@ export class CareService {
   }
 
   delete() {}
+
+  getMemberCares(
+    { id: accountId, organizationId }: ICurrentAccount,
+    memberId: string
+  ) {
+    return this.prisma.care.findMany({
+      where: { organizationId, memberId },
+      include: { member: true, curator: true }
+    });
+  }
 }

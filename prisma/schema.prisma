@@ -29,6 +29,7 @@ model Organization {
 model Account {
     id                              String               @id @default(cuid())
     username                        String               @unique
+    name                            String?
     email                           String?
     status                          String?
     role                            String
@@ -143,9 +144,11 @@ model Ministry {
 
 model Care {
     id                              String               @id @default(cuid())
-    description                     String
+    description                     String?
     priority                        String
     type                            String
+    imageUrl                        String?
+    date                            DateTime
     curator                         Account              @relation(fields: [curatorId], references: [id])
     curatorId                       String
     member                          Member               @relation(fields: [memberId], references: [id])

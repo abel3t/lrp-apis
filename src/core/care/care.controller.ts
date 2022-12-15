@@ -67,4 +67,14 @@ export class CareController {
   deleteCare() {
     return this.careService.delete();
   }
+
+  @Get('/members/:memberId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  getMemberCares(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('memberId') memberId: string
+  ) {
+    return this.careService.getMemberCares(account, memberId);
+  }
 }

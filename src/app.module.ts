@@ -9,6 +9,7 @@ import { TeamModule } from './core/team/team.module';
 import { JwtStrategy } from './strategies/passport.jwt.strategy';
 import { OrganizationModule } from './core/organization/organization.module';
 import { SharedModule } from './shared/shared.module';
+import { DashboardModule } from './core/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { SharedModule } from './shared/shared.module';
     MemberModule,
     MinistryModule,
     TeamModule,
-    OrganizationModule
+    OrganizationModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [JwtStrategy],
