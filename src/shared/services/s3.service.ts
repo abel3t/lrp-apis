@@ -21,13 +21,12 @@ export class S3Service {
   }
 
   async uploadFile(accountId: string, file: File, fileName: string) {
-
     const s3 = new S3();
     const uploadResult = await s3
       .upload({
         Bucket: this.s3Bucket,
         Body: file,
-        Key: `${accountId || 'unknown'}/${fileName || 'unknown'}`,
+        Key: `${accountId || 'unknown'}/${fileName || 'unknown'}`
       })
       .promise();
 
