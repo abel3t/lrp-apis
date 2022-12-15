@@ -5,7 +5,6 @@ import { AppConfig } from '../config';
 
 @Injectable()
 export class S3Service {
-  logger = new Logger('CognitoService');
   public s3Bucket: string;
 
   constructor() {
@@ -21,13 +20,14 @@ export class S3Service {
     });
   }
 
-  async uploadFile(file: File, fileName: string) {
+  async uploadFile(accountId: string, file: File, fileName: string) {
+
     const s3 = new S3();
     const uploadResult = await s3
       .upload({
         Bucket: this.s3Bucket,
         Body: file,
-        Key: `${new Date().toISOString()}-${fileName || 'unknown'}`
+        Key: `${accountId || 'unknown'}/${fileName || 'unknown'}`,
       })
       .promise();
 

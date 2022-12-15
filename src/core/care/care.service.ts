@@ -31,7 +31,8 @@ export class CareService {
 
   async getOne({ organizationId }: ICurrentAccount, careId: string) {
     const existedCare = await this.prisma.care.findFirst({
-      where: { id: careId, organization: { id: organizationId } }
+      where: { id: careId, organization: { id: organizationId } },
+      include: { member: true, curator: true }
     });
 
     if (!existedCare) {

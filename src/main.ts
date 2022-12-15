@@ -9,12 +9,32 @@ import { HttpExceptionFilter } from './filters/http.filter';
 import { PrismaService } from './shared/services/prisma.service';
 
 async function bootstrap() {
+  const CORS_OPTIONS = {
+    origin: [
+      'http://localhost:3000'
+    ],
+    allowedHeaders: [
+      'Access-Control-Allow-Origin',
+      'Origin',
+      'X-Requested-With',
+      'Accept',
+      'Content-Type',
+      'Authorization'
+    ],
+    exposedHeaders: 'Authorization',
+    credentials: true,
+    methods: ['GET', 'PUT', 'OPTIONS', 'POST', 'DELETE']
+  };
+
+  const fAdapt = new FastifyAdapter();
+  fAdapt.enableCors(CORS_OPTIONS);
+  fAdapt.register(require('fastify-multipart'));
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    fAdapt
   );
 
-  app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
 

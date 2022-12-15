@@ -10,6 +10,8 @@ import { JwtStrategy } from './strategies/passport.jwt.strategy';
 import { OrganizationModule } from './core/organization/organization.module';
 import { SharedModule } from './shared/shared.module';
 import { DashboardModule } from './core/dashboard/dashboard.module';
+import { AppService } from './app.service';
+import { S3Service } from './shared/services/s3.service';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { DashboardModule } from './core/dashboard/dashboard.module';
     DashboardModule
   ],
   controllers: [AppController],
-  providers: [JwtStrategy],
+  providers: [JwtStrategy, S3Service],
   exports: []
 })
 export class AppModule {}
