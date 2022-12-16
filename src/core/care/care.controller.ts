@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards
 } from '@nestjs/common';
 import { CareService } from './care.service';
@@ -17,7 +18,7 @@ import {
   CurrentAccount,
   ICurrentAccount
 } from '../../decorators/account.decorator';
-import { CreateCareDto, UpdateCareDto } from '../care/care.dto';
+import { CreateCareDto, GetCaresDto, UpdateCareDto } from './care.dto';
 
 @Controller('cares')
 export class CareController {
@@ -47,8 +48,11 @@ export class CareController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getCares(@CurrentAccount() account: ICurrentAccount) {
-    return this.careService.getByFilter(account);
+  getCares(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: GetCaresDto
+  ) {
+    return this.careService.getByFilter(account, filter || {});
   }
 
   @Get(':id')

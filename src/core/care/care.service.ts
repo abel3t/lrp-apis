@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/services/prisma.service';
 import { ICurrentAccount } from '../../decorators/account.decorator';
-import { CreateCareDto, UpdateCareDto } from './care.dto';
+import { CreateCareDto, GetCaresDto, UpdateCareDto } from './care.dto';
+import { getToDateFilter } from '../../shared/utils/date.util';
 
 @Injectable()
 export class CareService {
@@ -22,10 +23,21 @@ export class CareService {
     });
   }
 
-  getByFilter({ organizationId }: ICurrentAccount) {
+  getByFilter(
+    { organizationId }: ICurrentAccount,
+    { set, search, curatorId }: GetCaresDto
+  ) {
     return this.prisma.care.findMany({
-      where: { organizationId },
-      include: { member: true, curator: true }
+      where: {
+        organizationId,
+        date: {
+          lte: getToDateFilter(set)
+        }
+      },
+      include: { member: true, curator: true },
+      orderBy: {
+        date: 'desc'
+      }
     });
   }
 

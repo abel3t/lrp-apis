@@ -35,4 +35,11 @@ export class AccountController {
   getAccount(@CurrentAccount() { username }: ICurrentAccount) {
     return this.accountService.getAccount(username);
   }
+
+  @Get('curators')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  getCurators(@CurrentAccount() account: ICurrentAccount) {
+    return this.accountService.getCurators(account);
+  }
 }

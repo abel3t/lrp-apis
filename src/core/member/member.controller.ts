@@ -64,4 +64,18 @@ export class MemberController {
   deleteMember() {
     return this.memberService.delete();
   }
+
+  @Put(':memberId/assignees/:curatorId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  assignMemberToCurator(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('memberId') memberId: string,
+    @Param('curatorId') curatorId: string
+  ) {
+    return this.memberService.assignMemberToCurator(account, {
+      memberId,
+      curatorId
+    });
+  }
 }

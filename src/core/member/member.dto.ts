@@ -1,10 +1,31 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested
+} from 'class-validator';
 import { DiscipleshipProcess, Gender, MaritalStatus } from './member.enum';
+import { Type } from 'class-transformer';
+
+class Curator {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsOptional()
+  name: string;
+}
 
 export class CreateMemberDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Curator)
+  curator: Curator;
 
   @IsOptional()
   @IsString()
@@ -89,6 +110,11 @@ export class UpdateMemberDto {
   name?: string;
 
   @IsOptional()
+  @ValidateNested()
+  @Type(() => Curator)
+  curator: Curator;
+
+  @IsOptional()
   @IsString()
   gender?: Gender;
 
@@ -163,4 +189,24 @@ export class UpdateMemberDto {
   @IsOptional()
   @IsString()
   otherRole?: string;
+}
+
+export class AssignMemberForCuratorDto {
+  @IsOptional()
+  @IsString()
+  curatorId?: string;
+
+  @IsOptional()
+  @IsString()
+  memberId?: string;
+}
+
+export class GetMembersDto {
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsString()
+  curatorId?: string;
 }

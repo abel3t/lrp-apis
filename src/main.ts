@@ -33,7 +33,11 @@ async function bootstrap() {
     fAdapt
   );
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true
+    })
+  );
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const prismaService = app.get(PrismaService);

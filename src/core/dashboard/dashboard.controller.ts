@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
 import { AuthGuard } from '../../guards/auth.guard';
 import { RolesGuard } from '../../guards/roles.guard';
@@ -8,6 +8,11 @@ import {
   CurrentAccount,
   ICurrentAccount
 } from '../../decorators/account.decorator';
+import {
+  NeedingMoreCareDto,
+  OverviewDto,
+  TopCaringPeopleDto
+} from './dashboard.dto';
 
 @Controller('dashboard')
 export class DashboardController {
@@ -16,21 +21,30 @@ export class DashboardController {
   @Get('overview')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getOverview(@CurrentAccount() account: ICurrentAccount) {
-    return this.dashboardService.getOverview(account);
+  getOverview(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: OverviewDto
+  ) {
+    return this.dashboardService.getOverview(account, filter);
   }
 
   @Get('needing-more-care')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getNeedingMoreCareMembers(@CurrentAccount() account: ICurrentAccount) {
-    return this.dashboardService.getNeedingMoreCareMembers(account);
+  getNeedingMoreCareMembers(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: NeedingMoreCareDto
+  ) {
+    return this.dashboardService.getNeedingMoreCareMembers(account, filter);
   }
 
   @Get('top-caring')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getTopCaringPeople(@CurrentAccount() account: ICurrentAccount) {
-    return this.dashboardService.getTopCaringPeople(account);
+  getTopCaringPeople(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: TopCaringPeopleDto
+  ) {
+    return this.dashboardService.getTopCaringPeople(account, filter);
   }
 }

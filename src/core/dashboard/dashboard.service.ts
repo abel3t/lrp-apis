@@ -5,19 +5,35 @@ import { CarePriority } from '../care/care.enum';
 import { arraySortBy } from '../../shared/utils/array.util';
 import { TopCaringTitle } from './dashboard.enum';
 import { ICurrentAccount } from '../../decorators/account.decorator';
+import {
+  NeedingMoreCareDto,
+  OverviewDto,
+  TopCaringPeopleDto
+} from './dashboard.dto';
+import { getToDateFilter } from '../../shared/utils/date.util';
 
 @Injectable()
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getOverview({ organizationId }: ICurrentAccount) {
+  async getOverview({ organizationId }: ICurrentAccount, { set }: OverviewDto) {
     const [members, friends] = await Promise.all([
       this.prisma.member.findMany({
-        where: { organizationId },
+        where: {
+          organizationId,
+          createdAt: {
+            lte: getToDateFilter(set)
+          }
+        },
         select: { id: true, createdAt: true }
       }),
       this.prisma.friend.findMany({
-        where: { organizationId },
+        where: {
+          organizationId,
+          createdAt: {
+            lte: getToDateFilter(set)
+          }
+        },
         select: { id: true, type: true, createdAt: true }
       })
     ]);
@@ -41,11 +57,17 @@ export class DashboardService {
     };
   }
 
-  async getNeedingMoreCareMembers({ organizationId }: ICurrentAccount) {
+  async getNeedingMoreCareMembers(
+    { organizationId }: ICurrentAccount,
+    { set }: NeedingMoreCareDto
+  ) {
     const cares = await this.prisma.care.findMany({
       where: {
         organizationId,
-        priority: { in: [CarePriority.Normal, CarePriority.Warning] }
+        priority: { in: [CarePriority.Normal, CarePriority.Warning] },
+        date: {
+          lte: getToDateFilter(set)
+        }
       },
       include: { member: true, curator: true }
     });
@@ -68,10 +90,20 @@ export class DashboardService {
     return sortedWarningCares.concat(sortedNormalCares);
   }
 
-  async getTopCaringPeople({ organizationId }: ICurrentAccount) {
+  async getTopCaringPeople(
+    { organizationId }: ICurrentAccount,
+    { set }: TopCaringPeopleDto
+  ) {
     const [accounts, cares] = await Promise.all([
       this.prisma.account.findMany({ where: { organizationId } }),
-      this.prisma.care.findMany({ where: { organizationId } })
+      this.prisma.care.findMany({
+        where: {
+          organizationId,
+          date: {
+            lte: getToDateFilter(set)
+          }
+        }
+      })
     ]);
 
     const accountsMap: Record<string, any> = {};

@@ -1,12 +1,13 @@
 import {
   IsIn,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested
 } from 'class-validator';
-import { CarePriority, CareType } from './care.enum';
-import { Type } from 'class-transformer';
+import { CarePriority, CareType, DateFilterSet } from './care.enum';
+import { Transform, Type } from 'class-transformer';
 
 class CareMember {
   @IsString()
@@ -74,4 +75,25 @@ export class UpdateCareDto {
   @IsOptional()
   @IsString()
   imageUrl?: string;
+}
+
+export class GetCaresDto {
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) =>
+    Number.parseInt(value) ? Number.parseInt(value) : 0
+  )
+  set?: DateFilterSet;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsString()
+  curatorId?: string;
+
+  @IsOptional()
+  @IsString()
+  memberId?: string;
 }

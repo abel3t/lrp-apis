@@ -1,7 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ICurrentAccount } from '../../decorators/account.decorator';
-import { CreateMemberDto, UpdateMemberDto } from './member.dto';
+import {
+  AssignMemberForCuratorDto,
+  CreateMemberDto,
+  UpdateMemberDto
+} from './member.dto';
 import { PrismaService } from '../../shared/services/prisma.service';
+import { getVietnameseFirstName } from '../../shared/utils/string.util';
 
 @Injectable()
 export class MemberService {
@@ -11,9 +16,15 @@ export class MemberService {
     { id: accountId, organizationId }: ICurrentAccount,
     body: CreateMemberDto
   ) {
+    const curator = body?.curator?.id
+      ? { connect: { id: body.curator.id } }
+      : undefined;
+
     await this.prisma.member.create({
       data: {
         ...body,
+        curator,
+        firstName: getVietnameseFirstName(body.name),
         organization: { connect: { id: organizationId } },
         createdBy: accountId
       }
@@ -21,12 +32,17 @@ export class MemberService {
   }
 
   getByFilter({ organizationId }: ICurrentAccount) {
-    return this.prisma.member.findMany({ where: { organizationId } });
+    return this.prisma.member.findMany({
+      where: { organizationId },
+      include: { curator: true },
+      orderBy: { firstName: 'asc' }
+    });
   }
 
   async getOne({ organizationId }: ICurrentAccount, memberId: string) {
     const existedMember = await this.prisma.member.findFirst({
-      where: { id: memberId, organization: { id: organizationId } }
+      where: { id: memberId, organization: { id: organizationId } },
+      include: { curator: true }
     });
 
     if (!existedMember) {
@@ -48,11 +64,47 @@ export class MemberService {
       throw new BadRequestException('This member is not found.');
     }
 
+    const firstName = body.name ? getVietnameseFirstName(body.name) : undefined;
+    let curator;
+    if (body.curator === null) {
+      curator = { disconnect: true };
+    }
+    if (body.curator?.id) {
+      curator = { connect: { id: body.curator.id } };
+    }
+
     await this.prisma.member.update({
       where: { id: memberId },
-      data: { ...body, updatedBy: accountId }
+      data: { ...body, curator, firstName, updatedBy: accountId }
     });
   }
 
   delete() {}
+
+  async assignMemberToCurator(
+    { id: accountId, organizationId }: ICurrentAccount,
+    { memberId, curatorId }: AssignMemberForCuratorDto
+  ) {
+    const [existedMember, existedCurator] = await Promise.all([
+      this.prisma.member.findFirst({
+        where: { id: memberId, organizationId }
+      }),
+      this.prisma.account.findFirst({
+        where: { id: curatorId, organizationId }
+      })
+    ]);
+
+    if (!existedMember) {
+      throw new BadRequestException('This member is not found.');
+    }
+
+    if (!existedCurator) {
+      throw new BadRequestException('This curator is not found.');
+    }
+
+    await this.prisma.member.update({
+      where: { id: memberId },
+      data: { curatorId }
+    });
+  }
 }

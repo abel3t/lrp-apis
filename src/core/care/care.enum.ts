@@ -10,3 +10,11 @@ export enum CarePriority {
   Normal = 'Normal',
   Warning = 'Warning'
 }
+
+export enum DateFilterSet {
+  Current,
+  TwoMonthAgo,
+  FourMonthAgo,
+  SixMonthAgo,
+  LastYear
+}

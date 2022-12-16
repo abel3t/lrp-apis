@@ -9,6 +9,7 @@ import { Role } from './account.enum';
 import { PrismaService } from 'shared/services/prisma.service';
 import { CognitoUserAttribute } from 'amazon-cognito-identity-js';
 import { RefreshTokenDto } from './account.dto';
+import { ICurrentAccount } from '../../decorators/account.decorator';
 
 @Injectable()
 export class AccountService {
@@ -108,5 +109,9 @@ export class AccountService {
 
   async getAccount(username: string) {
     return this.prisma.account.findFirst({ where: { username } });
+  }
+
+  getCurators({ organizationId }: ICurrentAccount) {
+    return this.prisma.account.findMany({ where: { organizationId } });
   }
 }
