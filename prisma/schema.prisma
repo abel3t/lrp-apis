@@ -52,6 +52,7 @@ model Friend {
     id                              String               @id @default(cuid())
     type                            String?
     name                            String?
+    firstName                       String?
     description                     String?
     email                           String?
     phone                           String?
@@ -76,6 +77,7 @@ model Member {
     id                              String               @id @default(cuid())
     faithStatus                     Int?
     name                            String
+    firstName                       String?
     phone                           String?
     avatarUrl                       String?
     gender                          String?

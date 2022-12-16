@@ -38,6 +38,8 @@ export class DashboardService {
       })
     ]);
 
+    console.log(members, getToDateFilter(set));
+
     let totalFriends = 0;
     let totalUnbelievers = 0;
 

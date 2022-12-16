@@ -27,12 +27,24 @@ export class CareService {
     { organizationId }: ICurrentAccount,
     { set, search, curatorId }: GetCaresDto
   ) {
+    let name;
+    if (search) {
+      name = {
+        contains: search,
+        mode: 'insensitive'
+      };
+    }
+
     return this.prisma.care.findMany({
       where: {
         organizationId,
         date: {
           lte: getToDateFilter(set)
-        }
+        },
+        member: {
+          name
+        },
+        curatorId
       },
       include: { member: true, curator: true },
       orderBy: {

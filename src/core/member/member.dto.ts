@@ -208,5 +208,5 @@ export class GetMembersDto {
 
   @IsOptional()
   @IsString()
-  curatorId?: string;
+  curatorId: string;
 }

@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards
 } from '@nestjs/common';
 import { MemberService } from './member.service';
@@ -14,7 +15,7 @@ import { RolesGuard } from 'guards/roles.guard';
 import { Roles } from 'decorators/roles.decorator';
 import { Role } from 'core/account/account.enum';
 import { CurrentAccount, ICurrentAccount } from 'decorators/account.decorator';
-import { CreateMemberDto, UpdateMemberDto } from './member.dto';
+import { CreateMemberDto, GetMembersDto, UpdateMemberDto } from './member.dto';
 
 @Controller('members')
 export class MemberController {
@@ -44,8 +45,11 @@ export class MemberController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getMembers(@CurrentAccount() account: ICurrentAccount) {
-    return this.memberService.getByFilter(account);
+  getMembers(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: GetMembersDto
+  ) {
+    return this.memberService.getByFilter(account, filter);
   }
 
   @Get(':id')

@@ -1,12 +1,12 @@
 import { DateFilterSet } from '../../core/care/care.enum';
 
-export const getUtcDate = () => {
+export const getUtcEndDate = () => {
   const date = new Date();
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
 
-  return new Date(Date.UTC(year, month, day, 0, 0, 0));
+  return new Date(Date.UTC(year, month, day, 23, 59, 59));
 };
 
 export const subtractUtcMonth = (date: Date, month: number) => {
@@ -18,20 +18,20 @@ export const subtractUtcMonth = (date: Date, month: number) => {
 
 export const getToDateFilter = (set: number = 0) => {
   if (set === DateFilterSet.TwoMonthAgo) {
-    return subtractUtcMonth(getUtcDate(), 2);
+    return subtractUtcMonth(getUtcEndDate(), 2);
   }
 
   if (set === DateFilterSet.FourMonthAgo) {
-    return subtractUtcMonth(getUtcDate(), 4);
+    return subtractUtcMonth(getUtcEndDate(), 4);
   }
 
   if (set === DateFilterSet.SixMonthAgo) {
-    return subtractUtcMonth(getUtcDate(), 6);
+    return subtractUtcMonth(getUtcEndDate(), 6);
   }
 
   if (set === DateFilterSet.LastYear) {
-    return subtractUtcMonth(getUtcDate(), 12);
+    return subtractUtcMonth(getUtcEndDate(), 12);
   }
 
-  return subtractUtcMonth(getUtcDate(), 0);
+  return subtractUtcMonth(getUtcEndDate(), 0);
 };

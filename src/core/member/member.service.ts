@@ -3,6 +3,7 @@ import { ICurrentAccount } from '../../decorators/account.decorator';
 import {
   AssignMemberForCuratorDto,
   CreateMemberDto,
+  GetMembersDto,
   UpdateMemberDto
 } from './member.dto';
 import { PrismaService } from '../../shared/services/prisma.service';
@@ -31,9 +32,20 @@ export class MemberService {
     });
   }
 
-  getByFilter({ organizationId }: ICurrentAccount) {
+  getByFilter(
+    { organizationId }: ICurrentAccount,
+    { curatorId, search }: GetMembersDto
+  ) {
+    let name;
+    if (search) {
+      name = {
+        contains: search,
+        mode: 'insensitive'
+      };
+    }
+
     return this.prisma.member.findMany({
-      where: { organizationId },
+      where: { organizationId, curatorId, name },
       include: { curator: true },
       orderBy: { firstName: 'asc' }
     });
