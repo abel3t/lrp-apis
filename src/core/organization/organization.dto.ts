@@ -27,6 +27,10 @@ export class CreateOrganizationAdminDto {
   password: string;
 
   @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsNotEmpty()
   @IsIn(Object.values(Role))
   role: Role;
 }

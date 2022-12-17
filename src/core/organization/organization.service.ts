@@ -109,6 +109,7 @@ export class OrganizationService {
           data: {
             username: body.username,
             role: body.role,
+            name: body.name,
             organization: { connect: { id: organizationId } }
           }
         });
