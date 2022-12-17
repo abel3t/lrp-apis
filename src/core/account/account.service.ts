@@ -29,19 +29,19 @@ export class AccountService {
 
     return this.cognitoService
       .signUp({
-        username,
+        username: username.toLowerCase(),
         password,
         role: Role.Global_Admin
       })
       .then(async () => {
         const newUser = await this.prisma.account.create({
           data: {
-            username,
+            username: username.toLowerCase(),
             role: Role.Global_Admin
           }
         });
 
-        await this.cognitoService.updateUserCognitoAttributes(username, [
+        await this.cognitoService.updateUserCognitoAttributes(username.toLowerCase(), [
           new CognitoUserAttribute({
             Name: 'custom:id',
             Value: newUser.id
@@ -55,10 +55,10 @@ export class AccountService {
 
   login({ username, password }) {
     return this.cognitoService
-      .signIn(username, password)
+      .signIn(username.toLowerCase(), password)
       .then(async (data) => {
         const account = await this.prisma.account.findUnique({
-          where: { username },
+          where: { username: username.toLowerCase() },
           select: {
             id: true,
             username: true,

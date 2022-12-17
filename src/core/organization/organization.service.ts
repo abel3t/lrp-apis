@@ -84,7 +84,7 @@ export class OrganizationService {
   ) {
     const [existedAccount, existedOrganization] = await Promise.all([
       this.prisma.account.findUnique({
-        where: { username: body.username }
+        where: { username: body.username.toLowerCase() }
       }),
       this.prisma.organization.findUnique({
         where: { id: organizationId }
@@ -107,14 +107,14 @@ export class OrganizationService {
       .then(async () => {
         const newUser = await this.prisma.account.create({
           data: {
-            username: body.username,
+            username: body.username.toLowerCase(),
             role: body.role,
             name: body.name,
             organization: { connect: { id: organizationId } }
           }
         });
 
-        await this.cognitoService.updateUserCognitoAttributes(body.username, [
+        await this.cognitoService.updateUserCognitoAttributes(body.username.toLowerCase(), [
           new CognitoUserAttribute({
             Name: 'custom:id',
             Value: newUser.id
