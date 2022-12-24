@@ -114,12 +114,15 @@ export class OrganizationService {
           }
         });
 
-        await this.cognitoService.updateUserCognitoAttributes(body.username.toLowerCase(), [
-          new CognitoUserAttribute({
-            Name: 'custom:id',
-            Value: newUser.id
-          })
-        ]);
+        await this.cognitoService.updateUserCognitoAttributes(
+          body.username.toLowerCase(),
+          [
+            new CognitoUserAttribute({
+              Name: 'custom:id',
+              Value: newUser.id
+            })
+          ]
+        );
       })
       .catch((error) => {
         throw new BadRequestException(error, 'addAdmin');

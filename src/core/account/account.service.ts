@@ -41,12 +41,15 @@ export class AccountService {
           }
         });
 
-        await this.cognitoService.updateUserCognitoAttributes(username.toLowerCase(), [
-          new CognitoUserAttribute({
-            Name: 'custom:id',
-            Value: newUser.id
-          })
-        ]);
+        await this.cognitoService.updateUserCognitoAttributes(
+          username.toLowerCase(),
+          [
+            new CognitoUserAttribute({
+              Name: 'custom:id',
+              Value: newUser.id
+            })
+          ]
+        );
       })
       .catch((error) => {
         throw new BadRequestException(error, 'createGlobalAdmin');

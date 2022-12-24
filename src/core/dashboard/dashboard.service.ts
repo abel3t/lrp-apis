@@ -10,7 +10,10 @@ import {
   OverviewDto,
   TopCaringPeopleDto
 } from './dashboard.dto';
-import { getToDateFilter } from '../../shared/utils/date.util';
+import {
+  getFromDateFilter,
+  getToDateFilter
+} from '../../shared/utils/date.util';
 
 @Injectable()
 export class DashboardService {
@@ -37,8 +40,6 @@ export class DashboardService {
         select: { id: true, type: true, createdAt: true }
       })
     ]);
-
-    console.log(members, getToDateFilter(set));
 
     let totalFriends = 0;
     let totalUnbelievers = 0;
@@ -68,7 +69,8 @@ export class DashboardService {
         organizationId,
         priority: { in: [CarePriority.Normal, CarePriority.Warning] },
         date: {
-          lte: getToDateFilter(set)
+          lte: getToDateFilter(set),
+          gte: getFromDateFilter(set)
         }
       },
       include: { member: true, curator: true }
@@ -102,7 +104,8 @@ export class DashboardService {
         where: {
           organizationId,
           date: {
-            lte: getToDateFilter(set)
+            lte: getToDateFilter(set),
+            gte: getFromDateFilter(set)
           }
         }
       })
