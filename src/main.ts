@@ -10,7 +10,7 @@ import { PrismaService } from './shared/services/prisma.service';
 
 async function bootstrap() {
   const CORS_OPTIONS = {
-    origin: [process.env.WEB_CLIENT_URL],
+    origin: process.env.WEB_CLIENT_URLS?.split(',') || '*',
     allowedHeaders: [
       'Access-Control-Allow-Origin',
       'Origin',
