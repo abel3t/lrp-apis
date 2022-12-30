@@ -33,3 +33,17 @@ export class RefreshTokenDto {
   @IsString()
   refreshToken: string;
 }
+
+export class ChangePasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  accessToken: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
+  @IsNotEmpty()
+  @IsString()
+  newPassword: string;
+}

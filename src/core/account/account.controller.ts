@@ -1,6 +1,19 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Res,
+  UseGuards
+} from '@nestjs/common';
 import { AccountService } from './account.service';
-import { CreateGlobalAdminDto, LoginDto, RefreshTokenDto } from './account.dto';
+import {
+  ChangePasswordDto,
+  CreateGlobalAdminDto,
+  LoginDto,
+  RefreshTokenDto
+} from './account.dto';
 import { AuthGuard } from 'guards/auth.guard';
 import { Roles } from 'decorators/roles.decorator';
 import { Role } from './account.enum';
@@ -31,9 +44,19 @@ export class AccountController {
 
   @Get('/profile')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Global_Admin)
+  @Roles(Role.Global_Admin, Role.Pastor, Role.Staff, Role.Deacon)
   getAccount(@CurrentAccount() { username }: ICurrentAccount) {
     return this.accountService.getAccount(username);
+  }
+
+  @Put('/change-password')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Global_Admin, Role.Pastor, Role.Staff, Role.Deacon)
+  changePassword(
+    @CurrentAccount() { username }: ICurrentAccount,
+    @Body() body: ChangePasswordDto
+  ) {
+    return this.accountService.changePassword(username, body);
   }
 
   @Get('curators')

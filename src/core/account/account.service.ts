@@ -8,7 +8,7 @@ import { AppConfig } from 'shared/config';
 import { Role } from './account.enum';
 import { PrismaService } from 'shared/services/prisma.service';
 import { CognitoUserAttribute } from 'amazon-cognito-identity-js';
-import { RefreshTokenDto } from './account.dto';
+import { ChangePasswordDto, RefreshTokenDto } from './account.dto';
 import { ICurrentAccount } from '../../decorators/account.decorator';
 
 @Injectable()
@@ -110,8 +110,26 @@ export class AccountService {
       });
   }
 
-  async getAccount(username: string) {
+  getAccount(username: string) {
     return this.prisma.account.findFirst({ where: { username } });
+  }
+
+  async changePassword(
+    username: string,
+    { accessToken, password, newPassword }: ChangePasswordDto
+  ) {
+    const account = await this.prisma.account.findFirst({
+      where: { username }
+    });
+    if (!account) {
+      throw new BadRequestException('This account is not exists.');
+    }
+
+    return this.cognitoService.changePassword({
+      accessToken,
+      password,
+      newPassword
+    });
   }
 
   getCurators({ organizationId }: ICurrentAccount) {

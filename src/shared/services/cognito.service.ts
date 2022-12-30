@@ -11,6 +11,7 @@ import { CognitoIdentityServiceProvider, config as AwsConfig } from 'aws-sdk';
 import { AttributeType } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
 import { AppConfig } from '../config';
+import { ChangePasswordDto } from '../../core/account/account.dto';
 
 export interface ICognitoTokenInfo {
   token: string;
@@ -171,6 +172,24 @@ export class CognitoService {
         }
       })
     );
+  }
+
+  changePassword({ accessToken, password, newPassword }: ChangePasswordDto) {
+    const params = {
+      AccessToken: accessToken,
+      PreviousPassword: password,
+      ProposedPassword: newPassword
+    };
+    return new Promise((resolve, reject) => {
+      new CognitoIdentityServiceProvider()
+        .changePassword(params, function(error) {
+          if (error) {
+            return reject(error);
+          }
+
+          resolve(true);
+        });
+    });
   }
 
   public signOut(username: string): boolean {
