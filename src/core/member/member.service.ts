@@ -91,7 +91,23 @@ export class MemberService {
     });
   }
 
-  delete() {}
+  async delete(
+    { id: accountId, organizationId }: ICurrentAccount,
+    memberId: string
+  ) {
+    const existedMember = await this.prisma.member.findFirst({
+      where: { id: memberId, organizationId }
+    });
+    if (!existedMember) {
+      throw new BadRequestException('This member is not found.');
+    }
+
+    await this.prisma.member.delete({
+      where: { id: memberId }
+    });
+
+    return true;
+  }
 
   async assignMemberToCurator(
     { id: accountId, organizationId }: ICurrentAccount,

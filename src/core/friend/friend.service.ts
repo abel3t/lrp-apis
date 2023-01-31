@@ -54,5 +54,21 @@ export class FriendService {
     });
   }
 
-  delete() {}
+  async delete(
+    { id: accountId, organizationId }: ICurrentAccount,
+    friendId: string
+  ) {
+    const existedFriend = await this.prisma.friend.findFirst({
+      where: { id: friendId, organizationId }
+    });
+    if (!existedFriend) {
+      throw new BadRequestException('This friend is not found.');
+    }
+
+    await this.prisma.friend.delete({
+      where: { id: friendId }
+    });
+
+    return true;
+  }
 }

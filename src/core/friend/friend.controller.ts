@@ -64,7 +64,10 @@ export class FriendController {
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  deleteFriend() {
-    return this.friendService.delete();
+  deleteFriend(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') friendId: string
+  ) {
+    return this.friendService.delete(account, friendId);
   }
 }

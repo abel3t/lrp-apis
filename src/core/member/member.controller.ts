@@ -65,8 +65,11 @@ export class MemberController {
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  deleteMember() {
-    return this.memberService.delete();
+  deleteMember(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') memberId: string
+  ) {
+    return this.memberService.delete(account, memberId);
   }
 
   @Put(':memberId/assignees/:curatorId')

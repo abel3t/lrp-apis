@@ -181,14 +181,16 @@ export class CognitoService {
       ProposedPassword: newPassword
     };
     return new Promise((resolve, reject) => {
-      new CognitoIdentityServiceProvider()
-        .changePassword(params, function(error) {
+      new CognitoIdentityServiceProvider().changePassword(
+        params,
+        function (error) {
           if (error) {
             return reject(error);
           }
 
           resolve(true);
-        });
+        }
+      );
     });
   }
 
