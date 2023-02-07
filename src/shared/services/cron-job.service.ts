@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from './prisma.service';
 import { MailService } from './mail.service';
 import { VietNamTimezone } from 'contansts/date.contanst';
+import { AppConfig } from '../config';
 
 @Injectable()
 export class CronJobService {
@@ -24,6 +25,7 @@ export class CronJobService {
         WHERE 
           EXTRACT(DAY FROM "birthday") = ${todayDay}  
           AND EXTRACT(MONTH FROM "birthday") = ${todayMonth}
+          AND "organizationId" = ${AppConfig.MAIL.ORGANIZATION_ID}
           AND "isDeleted" = false`;
 
     if (!members.length) {
@@ -70,6 +72,7 @@ export class CronJobService {
         WHERE 
           EXTRACT(DAY FROM "birthday") = ${tomorrowDay}  
           AND EXTRACT(MONTH FROM "birthday") = ${tomorrowMonth}
+          AND "organizationId" = ${AppConfig.MAIL.ORGANIZATION_ID}
           AND "isDeleted" = false`;
 
     members.forEach((member) => {
@@ -90,7 +93,7 @@ export class CronJobService {
              <div>
                 <p>Ngày mai là sinh nhật của <strong>${member.name}</strong> đấy nhé!</p>
                  <p>Nhớ chuẩn bị hình ảnh và câu Kinh Thánh để chúc mừng nha!</p>
-                 <p>Ngày mai mình sẽ nhắc bạn để đăng vào 9:00 sáng nhé! 🎂🎁🎉🥳</p>
+                 <p>Mình sẽ nhắc bạn đăng bài vào 9:00 sáng mai nhé! 🎂🎁🎉🥳</p>
              </div>
         </div>`
       });

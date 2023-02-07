@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Header,
   Post,
   Req,
@@ -13,24 +12,12 @@ import {
   CurrentAccount,
   ICurrentAccount
 } from './decorators/account.decorator';
-import { CronJobService } from './shared/services/cron-job.service';
 
 @Controller()
 export class AppController {
   constructor(
-    private readonly s3Service: S3Service,
-    private cronJobService: CronJobService
+    private readonly s3Service: S3Service
   ) {}
-
-  @Get('test')
-  test1() {
-    return this.cronJobService.reminderTodayBirthday();
-  }
-
-  @Get('test2')
-  test2() {
-    return this.cronJobService.reminderTomorrowBirthday();
-  }
 
   @UseGuards(AuthGuard)
   @Header('Content-Type', 'application/json')
