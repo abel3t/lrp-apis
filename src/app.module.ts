@@ -10,7 +10,6 @@ import { JwtStrategy } from './strategies/passport.jwt.strategy';
 import { OrganizationModule } from './core/organization/organization.module';
 import { SharedModule } from './shared/shared.module';
 import { DashboardModule } from './core/dashboard/dashboard.module';
-import { AppService } from './app.service';
 import { S3Service } from './shared/services/s3.service';
 
 @Module({

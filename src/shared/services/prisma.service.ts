@@ -37,7 +37,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
           case 'findFirst':
           case 'findMany': {
-            params.args['where'] = { ...(params.args['where'] || {}), isDeleted: false };
+            params.args['where'] = {
+              ...(params.args['where'] || {}),
+              isDeleted: false
+            };
 
             break;
           }

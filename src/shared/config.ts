@@ -9,6 +9,11 @@ interface IConfig {
     CREATE_ACCOUNT_SECRET_KEY: string;
     WEBSITE_URL: string;
   };
+  MAIL: {
+    FROM_EMAIL: string;
+    APP_PASS: string;
+    BIRTHDAY_RECEIVER_EMAIL: string;
+  };
   AWS: {
     ACCESS_KEY_ID: string;
     SECRET_ACCESS_KEY: string;
@@ -34,6 +39,11 @@ export const AppConfig: IConfig = {
   APP: {
     CREATE_ACCOUNT_SECRET_KEY: process.env.CREATE_ACCOUNT_SECRET_KEY,
     WEBSITE_URL: process.env.WEBSITE_URL
+  },
+  MAIL: {
+    FROM_EMAIL: process.env.FROM_EMAIL,
+    APP_PASS: process.env.APP_PASS,
+    BIRTHDAY_RECEIVER_EMAIL: process.env.BIRTHDAY_RECEIVER_EMAIL
   },
   AWS: {
     ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
