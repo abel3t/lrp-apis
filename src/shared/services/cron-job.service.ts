@@ -4,7 +4,9 @@ import { PrismaService } from './prisma.service';
 import { MailService } from './mail.service';
 import { VietNamTimezone } from 'contansts/date.contanst';
 import { AppConfig } from '../config';
+import { getBirthday } from '../utils/date.util';
 
+const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 10 8 * *';
 @Injectable()
 export class CronJobService {
   constructor(
@@ -100,5 +102,74 @@ export class CronJobService {
     });
 
     this.logger.debug('Cronjob started at 9:00 PM', 'reminderTomorrowBirthday');
+  }
+
+  @Cron(EVERY_10TH_DAY_OF_MONTH_AT_9AM, { timeZone: VietNamTimezone })
+  async reminderQuarterBirthday() {
+    const MONTHS_PER_QUARTER = 3;
+    const END_DATE_OF_MONTH = 31;
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1;
+    const endOfQuarterMonths = [3, 6, 9, 12];
+
+    if (!endOfQuarterMonths?.includes(currentMonth)) {
+      return;
+    }
+
+    let lastQuarterMonth = 0;
+    if (currentMonth > MONTHS_PER_QUARTER) {
+      lastQuarterMonth = currentMonth - MONTHS_PER_QUARTER;
+    }
+
+    const members: any[] = await this.prisma.$queryRaw`
+        SELECT * FROM "Member"
+        WHERE 
+          EXTRACT(DAY FROM "birthday") <= ${END_DATE_OF_MONTH}  
+          AND EXTRACT(MONTH FROM "birthday") <= ${currentMonth}
+          AND EXTRACT(MONTH FROM "birthday") > ${lastQuarterMonth}
+          AND "organizationId" = ${AppConfig.MAIL.ORGANIZATION_ID}
+          AND "isDeleted" = false`;
+
+    if (!members.length) {
+      this.mailService.sendBirthdayEmail({
+        subject: `Quý này không có sinh nhật của ai cả! Hãy nghỉ ngơi nhé!!!!🎉🥳`,
+        html: `<div>“Người nào ở nơi kín đáo của Đấng Chí Cao, sẽ được hằng ở dưới bóng của Đấng Toàn năng.” <strong>(Thi Thiên 91)</strong><div/>`
+      });
+    }
+
+    const birthdayLists = members
+      .filter((member) => member.name)
+      .map((member) => ({
+        name: member.name,
+        birthday: member.birthday
+      }));
+
+    birthdayLists.sort((a, b) => (a.birthday > b.birthday ? 1 : -1));
+
+    this.mailService.sendQuarterBirthday({
+      subject: `Hôm nay là ngày chuẩn bị sinh nhật quý rồi đấy! 🎂🎁🎉🥳`,
+      html: `<div>
+             <p><strong><i>Hi Huyền,</i></strong></p>
+
+             <div>
+                <p>Hôm nay, mình gửi sinh nhật quý đấy!</p>
+                <p>Nhớ chuẩn bị quà tặng chúc mừng các bạn ấy nhé! 🎂🎁🎉🥳</p>
+                
+                <p>Dưới đây là danh sách các bạn có sinh nhật trong quý:</p>
+                <ul>
+                    ${birthdayLists
+                      .map(
+                        (member) =>
+                          `<li>
+                                <span><strong>${member.name}</strong></span>:
+                                <span>${getBirthday(member.birthday)}</span>
+                        </li>`
+                      )
+                      .join('')}
+                </ul>
+             </div>
+          </div>`
+    });
+    this.logger.debug('Cronjob started at 9:00 AM', 'reminderQuarterBirthday');
   }
 }

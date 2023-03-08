@@ -30,4 +30,24 @@ export class MailService {
         );
       });
   }
+
+  sendQuarterBirthday({ subject, html }: IBirthdayEmailDto) {
+    this.mailerService
+      .sendMail({
+        to: AppConfig.MAIL.QUARTER_BIRTHDAY_RECEIVER_EMAIL,
+        from: AppConfig.MAIL.FROM_EMAIL,
+        subject,
+        html
+      })
+      .then(() =>
+        Logger.log(`Send remind birthday email successfully!`, 'MailService')
+      )
+      .catch((error) => {
+        Logger.error(
+          `Send remind birthday email failed!`,
+          error,
+          'MailService'
+        );
+      });
+  }
 }

@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Header,
-  Post,
-  Req,
-  Res,
-  UseGuards
-} from '@nestjs/common';
+import { Controller, Header, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from './guards/auth.guard';
 import { S3Service } from './shared/services/s3.service';
 import {
@@ -15,9 +8,7 @@ import {
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly s3Service: S3Service
-  ) {}
+  constructor(private readonly s3Service: S3Service) {}
 
   @UseGuards(AuthGuard)
   @Header('Content-Type', 'application/json')

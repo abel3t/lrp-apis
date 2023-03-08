@@ -13,6 +13,7 @@ interface IConfig {
     FROM_EMAIL: string;
     APP_PASS: string;
     BIRTHDAY_RECEIVER_EMAIL: string;
+    QUARTER_BIRTHDAY_RECEIVER_EMAIL: string;
     ORGANIZATION_ID: string;
   };
   AWS: {
@@ -45,6 +46,8 @@ export const AppConfig: IConfig = {
     FROM_EMAIL: process.env.FROM_EMAIL,
     APP_PASS: process.env.APP_PASS,
     BIRTHDAY_RECEIVER_EMAIL: process.env.BIRTHDAY_RECEIVER_EMAIL,
+    QUARTER_BIRTHDAY_RECEIVER_EMAIL:
+      process.env.QUARTER_BIRTHDAY_RECEIVER_EMAIL,
     ORGANIZATION_ID: process.env.ORGANIZATION_ID
   },
   AWS: {

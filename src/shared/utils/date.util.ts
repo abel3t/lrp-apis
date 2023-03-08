@@ -66,3 +66,15 @@ export const getFromDateFilter = (set: number = 0) => {
 
   return subtractUtcMonth(getUtcStartDate(), DefaultMonth);
 };
+
+export const getBirthday = (date: Date | string) => {
+  if (!date) {
+    return '';
+  }
+
+  const birthday = new Date(date);
+  const day = birthday.getDate();
+  const month = birthday.getMonth() + 1;
+
+  return `${day}`.padStart(2, '0') + '/' + `${month}`.padStart(2, '0');
+};
