@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { config as AwsConfig, S3 } from 'aws-sdk';
 
 import { AppConfig } from '../config';

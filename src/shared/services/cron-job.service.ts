@@ -4,9 +4,9 @@ import { PrismaService } from './prisma.service';
 import { MailService } from './mail.service';
 import { VietNamTimezone } from 'contansts/date.contanst';
 import { AppConfig } from '../config';
-import { getBirthday } from '../utils/date.util';
+import { formatMonthDay, getBirthday } from '../utils/date.util';
 
-const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 10 8 * *';
+const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 09 11 * *';
 @Injectable()
 export class CronJobService {
   constructor(
@@ -144,7 +144,10 @@ export class CronJobService {
         birthday: member.birthday
       }));
 
-    birthdayLists.sort((a, b) => (a.birthday > b.birthday ? 1 : -1));
+    birthdayLists
+      .sort((a, b) => {
+        return formatMonthDay(a.birthday) > formatMonthDay(b.birthday) ? 1 : -1;
+      });
 
     this.mailService.sendQuarterBirthday({
       subject: `Hôm nay là ngày chuẩn bị sinh nhật quý rồi đấy! 🎂🎁🎉🥳`,

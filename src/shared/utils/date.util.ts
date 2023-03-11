@@ -78,3 +78,15 @@ export const getBirthday = (date: Date | string) => {
 
   return `${day}`.padStart(2, '0') + '/' + `${month}`.padStart(2, '0');
 };
+
+export const formatMonthDay = (date: Date | string) => {
+  if (!date) {
+    return '';
+  }
+
+  const d = new Date(date);
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+
+  return `${month}`.padStart(2, '0') + '/' + `${day}`.padStart(2, '0');
+};
