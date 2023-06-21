@@ -6,7 +6,7 @@ import { VietNamTimezone } from 'contansts/date.contanst';
 import { AppConfig } from '../config';
 import { formatMonthDay, getBirthday } from '../utils/date.util';
 
-const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 09 12 * *';
+const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 09 21 * *';
 @Injectable()
 export class CronJobService {
   constructor(
