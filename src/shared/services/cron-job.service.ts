@@ -6,7 +6,7 @@ import { VietNamTimezone } from 'contansts/date.contanst';
 import { AppConfig } from '../config';
 import { formatMonthDay, getBirthday } from '../utils/date.util';
 
-const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 09 21 * *';
+const EVERY_10TH_DAY_OF_MONTH_AT_9AM = '0 09 10 * *';
 @Injectable()
 export class CronJobService {
   constructor(
@@ -152,10 +152,10 @@ export class CronJobService {
     this.mailService.sendQuarterBirthday({
       subject: `[LEC Q10]: Sinh nhật quý - hôm nay là ngày chuẩn bị sinh nhật quý rồi đấy! 🎂🎁🎉🥳`,
       html: `<div>
-             <p><strong><i>Hi Huyền,</i></strong></p>
+             <p><strong><i>Hi chị Huyền,</i></strong></p>
 
              <div>
-                <p>Hôm nay, mình gửi sinh nhật quý đấy!</p>
+                <p>Hôm nay, em gửi sinh nhật quý đấy!</p>
                 <p>Nhớ chuẩn bị quà tặng chúc mừng các bạn ấy nhé! 🎂🎁🎉🥳</p>
                 
                 <p>Dưới đây là danh sách các bạn có sinh nhật trong quý:</p>
