@@ -96,7 +96,10 @@ export class CareService {
   ) {
     return this.prisma.care.findMany({
       where: { organizationId, memberId },
-      include: { member: true, curator: true }
+      include: { member: true, curator: true },
+      orderBy: {
+        date: 'desc'
+      } 
     });
   }
 }
