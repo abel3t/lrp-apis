@@ -21,7 +21,7 @@ export class DashboardService {
 
   async getOverview({ organizationId }: ICurrentAccount, { set }: OverviewDto) {
     const [members, friends] = await Promise.all([
-      this.prisma.member.findMany({
+      this.prisma.person.findMany({
         where: {
           organizationId,
           createdAt: {
@@ -30,7 +30,7 @@ export class DashboardService {
         },
         select: { id: true, createdAt: true }
       }),
-      this.prisma.friend.findMany({
+      this.prisma.person.findMany({
         where: {
           organizationId,
           createdAt: {
@@ -73,7 +73,7 @@ export class DashboardService {
           gte: getFromDateFilter(set)
         }
       },
-      include: { member: true, curator: true }
+      include: { person: true, curator: true }
     });
 
     let warningCares = [];

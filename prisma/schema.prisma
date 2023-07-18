@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "postgres"
+    provider = "cockroachdb"
     url      = env("DATABASE_URL")
 }
 
@@ -14,12 +14,10 @@ model Organization {
     id                              String              @id @default(cuid())
     name                            String
     admins                          Account[]
-    friends                         Friend[]
-    members                         Member[]
-    teams                           Team[]
-    ministries                      Ministry[]
+    people                          Person[]
+    groups                          Group[]
     cares                           Care[]
-    logoUrl                         String?
+    logo                            String?
 
     createdAt                       DateTime            @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -37,14 +35,13 @@ model Account {
     name                            String?
     email                           String?
     status                          String?
-    avatarUrl                       String?
+    avatar                          String?
     role                            String
+
     organization                    Organization?        @relation(fields: [organizationId], references: [id])
     organizationId                  String?
-    friends                         Friend[]
-    members                         Member[]
+    people                          Person[]
     cares                           Care[]
-    sharedCares                     AccountsShareCares[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -56,13 +53,14 @@ model Account {
     @@index([isDeleted])
 }
 
-model Member {
+model Person {
     id                              String               @id @default(cuid())
     faithStatus                     Int?
     name                            String
     firstName                       String?
     phone                           String?
-    avatarUrl                       String?
+    avatar                          String?
+    introducedBy                    String?
     gender                          String?
     birthday                        DateTime?
     career                          String?
@@ -73,22 +71,13 @@ model Member {
     discipleshipProcess             String?
     believeInJesusDay               DateTime?
     firstComeToLEC                  DateTime?
-    introducedBy                    String?
-    newLifeMentor                   String?
-    memberClassDay                  DateTime?
-    walkWithGodClassDay             DateTime?
     weddingDate                     DateTime?
-    giveChildDay                    DateTime?
     hometown                        String?
-    otherRole                       String?
+    role                            String?
+    type                            String?
 
     cares                           Care[]
-
-    leadTeams                       Team[]
-    leadMinistries                  Ministry[]
-
-    teams                           TeamsMembers[]
-    ministries                      MinistriesMembers[]
+    groups                          GroupsMembers[]
 
     organization                    Organization         @relation(fields: [organizationId], references: [id])
     organizationId                  String
@@ -105,62 +94,12 @@ model Member {
     @@index([isDeleted])
 }
 
-model Friend {
-    id                              String               @id @default(cuid())
-    type                            String?
-    name                            String?
-    firstName                       String?
-    description                     String?
-    email                           String?
-    phone                           String?
-    address                         String?
-    gender                          String?
-    hometown                        String?
-    birthday                        DateTime?
-    avatarUrl                       String?
-    introducedBy                    String?
-    curator                         Account?             @relation(fields: [curatorId], references: [id])
-    curatorId                       String?
-    organization                    Organization         @relation(fields: [organizationId], references: [id])
-    organizationId                  String
-
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
-
-    isDeleted                       Boolean             @default(false)
-
-    @@index([isDeleted])
-}
-
-model Team {
+model Group {
     id                              String               @id @default(cuid())
     name                            String
     avatarUrl                       String?
-    leader                          Member?              @relation(fields: [leaderId], references: [id])
-    leaderId                        String?
-    members                         TeamsMembers[]
-    organization                    Organization         @relation(fields: [organizationId], references: [id])
-    organizationId                  String
-
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
-
-    isDeleted                       Boolean             @default(false)
-
-    @@index([isDeleted])
-}
-
-model Ministry {
-    id                              String               @id @default(cuid())
-    name                            String
-    avatarUrl                       String?
-    leader                          Member?              @relation(fields: [leaderId], references: [id])
-    leaderId                        String?
-    members                         MinistriesMembers[]
+    
+    members                         GroupsMembers[]
     organization                    Organization         @relation(fields: [organizationId], references: [id])
     organizationId                  String
 
@@ -183,11 +122,10 @@ model Care {
     date                            DateTime
     curator                         Account              @relation(fields: [curatorId], references: [id])
     curatorId                       String
-    member                          Member               @relation(fields: [memberId], references: [id])
-    memberId                        String
+    person                          Person               @relation(fields: [personId], references: [id])
+    personId                        String
     organization                    Organization         @relation(fields: [organizationId], references: [id])
     organizationId                  String
-    sharedPeople                    AccountsShareCares[]
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
     createdBy                       String?
@@ -199,11 +137,11 @@ model Care {
     @@index([isDeleted])
 }
 
-model TeamsMembers {
-    member                          Member               @relation(fields: [memberId], references: [id])
-    memberId                        String
-    team                            Team                 @relation(fields: [teamId], references: [id])
-    teamId                          String
+model GroupsMembers {
+    person                          Person               @relation(fields: [personId], references: [id])
+    personId                        String
+    group                           Group                 @relation(fields: [groupId], references: [id])
+    groupId                         String
     role                            Int
 
     createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
@@ -211,35 +149,6 @@ model TeamsMembers {
     updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
     updatedBy                       String?
 
-    @@id([memberId, teamId])
+    @@id([personId, groupId])
 }
 
-model MinistriesMembers {
-    member                          Member               @relation(fields: [memberId], references: [id])
-    memberId                        String
-    ministry                        Ministry             @relation(fields: [ministryId], references: [id])
-    ministryId                      String
-    role                            Int
-
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
-
-    @@id([memberId, ministryId])
-}
-
-model AccountsShareCares {
-    account                         Account              @relation(fields: [accountId], references: [id])
-    accountId                       String
-    care                            Care                 @relation(fields: [careId], references: [id])
-    careId                          String
-    access                          Int
-
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
-
-    @@id([accountId, careId])
-}

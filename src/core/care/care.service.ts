@@ -15,7 +15,7 @@ export class CareService {
     await this.prisma.care.create({
       data: {
         ...body,
-        member: { connect: { id: body.member.id } },
+        person: { connect: { id: body.member.id } },
         curator: { connect: { id: accountId } },
         organization: { connect: { id: organizationId } },
         createdBy: accountId
@@ -41,12 +41,12 @@ export class CareService {
         date: {
           lte: getToDateFilter(set)
         },
-        member: {
+        person: {
           name
         },
         curatorId
       },
-      include: { member: true, curator: true },
+      include: { person: true, curator: true },
       orderBy: {
         date: 'desc'
       }
@@ -56,7 +56,7 @@ export class CareService {
   async getOne({ organizationId }: ICurrentAccount, careId: string) {
     const existedCare = await this.prisma.care.findFirst({
       where: { id: careId, organization: { id: organizationId } },
-      include: { member: true, curator: true }
+      include: { person: true, curator: true }
     });
 
     if (!existedCare) {
@@ -84,7 +84,7 @@ export class CareService {
 
     await this.prisma.care.update({
       where: { id: careId },
-      data: { ...body, member, updatedBy: accountId }
+      data: { ...body, person: member, updatedBy: accountId }
     });
   }
 
@@ -95,8 +95,8 @@ export class CareService {
     memberId: string
   ) {
     return this.prisma.care.findMany({
-      where: { organizationId, memberId },
-      include: { member: true, curator: true },
+      where: { organizationId, personId: memberId },
+      include: { person: true, curator: true },
       orderBy: {
         date: 'desc'
       } 

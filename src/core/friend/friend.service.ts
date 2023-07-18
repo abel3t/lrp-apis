@@ -11,7 +11,7 @@ export class FriendService {
     { id: accountId, organizationId }: ICurrentAccount,
     body: CreateFriendDto
   ) {
-    await this.prisma.friend.create({
+    await this.prisma.person.create({
       data: {
         ...body,
         organization: { connect: { id: organizationId } },
@@ -21,11 +21,11 @@ export class FriendService {
   }
 
   getByFilter({ organizationId }: ICurrentAccount) {
-    return this.prisma.friend.findMany({ where: { organizationId } });
+    return this.prisma.person.findMany({ where: { organizationId } });
   }
 
   async getOne({ organizationId }: ICurrentAccount, friendId: string) {
-    const existedFriend = await this.prisma.friend.findFirst({
+    const existedFriend = await this.prisma.person.findFirst({
       where: { id: friendId, organization: { id: organizationId } }
     });
 
@@ -41,14 +41,14 @@ export class FriendService {
     friendId: string,
     body: UpdateFriendDto
   ) {
-    const existedFriend = await this.prisma.friend.findUnique({
+    const existedFriend = await this.prisma.person.findUnique({
       where: { id: friendId }
     });
     if (!existedFriend) {
       throw new BadRequestException('This friend is not found.');
     }
 
-    await this.prisma.friend.update({
+    await this.prisma.person.update({
       where: { id: friendId },
       data: { ...body, updatedBy: accountId }
     });
@@ -58,14 +58,14 @@ export class FriendService {
     { id: accountId, organizationId }: ICurrentAccount,
     friendId: string
   ) {
-    const existedFriend = await this.prisma.friend.findFirst({
+    const existedFriend = await this.prisma.person.findFirst({
       where: { id: friendId, organizationId }
     });
     if (!existedFriend) {
       throw new BadRequestException('This friend is not found.');
     }
 
-    await this.prisma.friend.delete({
+    await this.prisma.person.delete({
       where: { id: friendId }
     });
 

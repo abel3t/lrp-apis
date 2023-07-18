@@ -21,7 +21,7 @@ export class MemberService {
       ? { connect: { id: body.curator.id } }
       : undefined;
 
-    await this.prisma.member.create({
+    await this.prisma.person.create({
       data: {
         ...body,
         curator,
@@ -44,7 +44,7 @@ export class MemberService {
       };
     }
 
-    return this.prisma.member.findMany({
+    return this.prisma.person.findMany({
       where: { organizationId, curatorId, name },
       include: { curator: true },
       orderBy: { firstName: 'asc' }
@@ -52,7 +52,7 @@ export class MemberService {
   }
 
   async getOne({ organizationId }: ICurrentAccount, memberId: string) {
-    const existedMember = await this.prisma.member.findFirst({
+    const existedMember = await this.prisma.person.findFirst({
       where: { id: memberId, organization: { id: organizationId } },
       include: { curator: true }
     });
@@ -69,7 +69,7 @@ export class MemberService {
     memberId: string,
     body: UpdateMemberDto
   ) {
-    const existedMember = await this.prisma.member.findUnique({
+    const existedMember = await this.prisma.person.findUnique({
       where: { id: memberId }
     });
     if (!existedMember) {
@@ -85,7 +85,7 @@ export class MemberService {
       curator = { connect: { id: body.curator.id } };
     }
 
-    await this.prisma.member.update({
+    await this.prisma.person.update({
       where: { id: memberId },
       data: { ...body, curator, firstName, updatedBy: accountId }
     });
@@ -95,14 +95,14 @@ export class MemberService {
     { id: accountId, organizationId }: ICurrentAccount,
     memberId: string
   ) {
-    const existedMember = await this.prisma.member.findFirst({
+    const existedMember = await this.prisma.person.findFirst({
       where: { id: memberId, organizationId }
     });
     if (!existedMember) {
       throw new BadRequestException('This member is not found.');
     }
 
-    await this.prisma.member.delete({
+    await this.prisma.person.delete({
       where: { id: memberId }
     });
 
@@ -114,7 +114,7 @@ export class MemberService {
     { memberId, curatorId }: AssignMemberForCuratorDto
   ) {
     const [existedMember, existedCurator] = await Promise.all([
-      this.prisma.member.findFirst({
+      this.prisma.person.findFirst({
         where: { id: memberId, organizationId }
       }),
       this.prisma.account.findFirst({
@@ -130,7 +130,7 @@ export class MemberService {
       throw new BadRequestException('This curator is not found.');
     }
 
-    await this.prisma.member.update({
+    await this.prisma.person.update({
       where: { id: memberId },
       data: { curatorId }
     });
