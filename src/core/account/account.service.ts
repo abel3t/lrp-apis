@@ -114,6 +114,10 @@ export class AccountService {
     return this.prisma.account.findFirst({ where: { username } });
   }
 
+  deleteAccount(username: string) {
+    return this.prisma.account.delete({ where: { username }});
+  }
+
   async changePassword(
     username: string,
     { accessToken, password, newPassword }: ChangePasswordDto

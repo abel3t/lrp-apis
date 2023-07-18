@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   Put,
   Res,
@@ -48,6 +50,16 @@ export class AccountController {
   getAccount(@CurrentAccount() { username }: ICurrentAccount) {
     return this.accountService.getAccount(username);
   }
+
+  @Delete('/accounts/:username')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Global_Admin)
+  deleteAccount(
+    @Param('username') username: string 
+  ) {
+    return this.accountService.deleteAccount(username);
+  }
+
 
   @Put('/change-password')
   @UseGuards(AuthGuard, RolesGuard)
