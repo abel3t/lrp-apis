@@ -45,7 +45,7 @@ export class CreateCareDto {
 
   @IsOptional()
   @IsString()
-  imageUrl?: string;
+  image?: string;
 }
 
 export class UpdateCareDto {
@@ -74,7 +74,7 @@ export class UpdateCareDto {
 
   @IsOptional()
   @IsString()
-  imageUrl?: string;
+  image?: string;
 }
 
 export class GetCaresDto {

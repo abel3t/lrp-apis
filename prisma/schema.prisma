@@ -35,7 +35,7 @@ model Account {
   name     String?
   email    String?
   status   String?
-  avatar   String?
+  image    String?
   role     String
 
   organization   Organization? @relation(fields: [organizationId], references: [id])
