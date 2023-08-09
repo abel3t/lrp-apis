@@ -1,3 +1,12 @@
+export enum PersonalType {
+  Member = 'Member',
+  Unbeliever = 'Unbeliever',
+  Unsure = 'Unsure',
+  Friend = 'Friend',
+  NextStep = 'NextStep',
+  NewLife = 'NewLife'
+}
+
 export enum Gender {
   Male = 'Male',
   Female = 'Female'

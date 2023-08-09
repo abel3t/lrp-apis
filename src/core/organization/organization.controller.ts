@@ -55,8 +55,8 @@ export class OrganizationController {
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Global_Admin)
-  getOrganization() {
-    return this.organizationService.getOne();
+  getOrganization(@Param('id') organizationId: string) {
+    return this.organizationService.getOne(organizationId);
   }
 
   @Get(':id/admins')

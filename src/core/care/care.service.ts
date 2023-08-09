@@ -12,10 +12,12 @@ export class CareService {
     { id: accountId, organizationId }: ICurrentAccount,
     body: CreateCareDto
   ) {
+    const { member, ...data } = body;
+
     await this.prisma.care.create({
       data: {
-        ...body,
-        person: { connect: { id: body.member.id } },
+        ...data,
+        person: { connect: { id: member.id } },
         curator: { connect: { id: accountId } },
         organization: { connect: { id: organizationId } },
         createdBy: accountId
@@ -90,16 +92,13 @@ export class CareService {
 
   delete() {}
 
-  getMemberCares(
-    { id: accountId, organizationId }: ICurrentAccount,
-    memberId: string
-  ) {
+  getMemberCares({ organizationId }: ICurrentAccount, memberId: string) {
     return this.prisma.care.findMany({
       where: { organizationId, personId: memberId },
       include: { person: true, curator: true },
       orderBy: {
         date: 'desc'
-      } 
+      }
     });
   }
 }

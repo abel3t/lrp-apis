@@ -2,153 +2,153 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "cockroachdb"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Organization {
-    id                              String              @id @default(cuid())
-    name                            String
-    admins                          Account[]
-    people                          Person[]
-    groups                          Group[]
-    cares                           Care[]
-    logo                            String?
+  id     String    @id @default(cuid())
+  name   String
+  admins Account[]
+  people Person[]
+  groups Group[]
+  cares  Care[]
+  image  String?
 
-    createdAt                       DateTime            @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime            @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
 
-    isDeleted                       Boolean             @default(false)
+  isDeleted Boolean @default(false)
 
-    @@index([isDeleted])
+  @@index([isDeleted])
 }
 
 model Account {
-    id                              String               @id @default(cuid())
-    username                        String               @unique
-    name                            String?
-    email                           String?
-    status                          String?
-    avatar                          String?
-    role                            String
+  id       String  @id @default(cuid())
+  username String  @unique
+  name     String?
+  email    String?
+  status   String?
+  avatar   String?
+  role     String
 
-    organization                    Organization?        @relation(fields: [organizationId], references: [id])
-    organizationId                  String?
-    people                          Person[]
-    cares                           Care[]
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  people         Person[]
+  cares          Care[]
 
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
 
-    isDeleted                       Boolean             @default(false)
+  isDeleted Boolean @default(false)
 
-    @@index([isDeleted])
+  @@index([isDeleted])
 }
 
 model Person {
-    id                              String               @id @default(cuid())
-    faithStatus                     Int?
-    name                            String
-    firstName                       String?
-    phone                           String?
-    avatar                          String?
-    introducedBy                    String?
-    gender                          String?
-    birthday                        DateTime?
-    career                          String?
-    address                         String?
-    email                           String?
-    maritalStatus                   String?
-    description                     String?
-    discipleshipProcess             String?
-    believeInJesusDay               DateTime?
-    firstComeToLEC                  DateTime?
-    weddingDate                     DateTime?
-    hometown                        String?
-    role                            String?
-    type                            String?
+  id                  String    @id @default(cuid())
+  faithStatus         Int?
+  name                String
+  firstName           String?
+  phone               String?
+  image               String?
+  introducedBy        String?
+  gender              String?
+  birthday            DateTime?
+  career              String?
+  address             String?
+  email               String?
+  maritalStatus       String?
+  description         String?
+  discipleshipProcess String?
+  believeInJesusDay   DateTime?
+  firstComeToLEC      DateTime?
+  weddingDate         DateTime?
+  hometown            String?
+  newLifeMentor       String?
+  role                String?
+  type                String
 
-    cares                           Care[]
-    groups                          GroupsMembers[]
+  cares  Care[]
+  groups GroupsMembers[]
 
-    organization                    Organization         @relation(fields: [organizationId], references: [id])
-    organizationId                  String
-    curator                         Account?             @relation(fields: [curatorId], references: [id])
-    curatorId                       String?
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  curator        Account?     @relation(fields: [curatorId], references: [id])
+  curatorId      String?
 
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
 
-    isDeleted                       Boolean             @default(false)
+  isDeleted Boolean @default(false)
 
-    @@index([isDeleted])
+  @@index([isDeleted])
 }
 
 model Group {
-    id                              String               @id @default(cuid())
-    name                            String
-    avatarUrl                       String?
-    
-    members                         GroupsMembers[]
-    organization                    Organization         @relation(fields: [organizationId], references: [id])
-    organizationId                  String
+  id    String  @id @default(cuid())
+  name  String
+  image String?
 
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
+  members        GroupsMembers[]
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  organizationId String
 
-    isDeleted                       Boolean             @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
 
-    @@index([isDeleted])
+  isDeleted Boolean @default(false)
+
+  @@index([isDeleted])
 }
 
 model Care {
-    id                              String               @id @default(cuid())
-    description                     String?
-    priority                        String
-    type                            String
-    imageUrl                        String?
-    date                            DateTime
-    curator                         Account              @relation(fields: [curatorId], references: [id])
-    curatorId                       String
-    person                          Person               @relation(fields: [personId], references: [id])
-    personId                        String
-    organization                    Organization         @relation(fields: [organizationId], references: [id])
-    organizationId                  String
+  id             String       @id @default(cuid())
+  description    String?
+  priority       String
+  type           String
+  image          String?
+  date           DateTime
+  curator        Account      @relation(fields: [curatorId], references: [id])
+  curatorId      String
+  person         Person       @relation(fields: [personId], references: [id])
+  personId       String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
 
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
 
-    isDeleted                       Boolean             @default(false)
+  isDeleted Boolean @default(false)
 
-    @@index([isDeleted])
+  @@index([isDeleted])
 }
 
 model GroupsMembers {
-    person                          Person               @relation(fields: [personId], references: [id])
-    personId                        String
-    group                           Group                 @relation(fields: [groupId], references: [id])
-    groupId                         String
-    role                            Int
+  person   Person @relation(fields: [personId], references: [id])
+  personId String
+  group    Group  @relation(fields: [groupId], references: [id])
+  groupId  String
+  role     Int
 
-    createdAt                       DateTime             @default(now()) @db.Timestamptz(0)
-    createdBy                       String?
-    updatedAt                       DateTime             @updatedAt @db.Timestamptz(0)
-    updatedBy                       String?
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
 
-    @@id([personId, groupId])
+  @@id([personId, groupId])
 }
-

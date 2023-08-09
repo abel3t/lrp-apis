@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Res,
   UseGuards
 } from '@nestjs/common';
 import { AccountService } from './account.service';
@@ -27,10 +26,7 @@ export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post('global-admins')
-  createGlobalAdminAccount(
-    @Body() body: CreateGlobalAdminDto,
-    @Res() res: any
-  ) {
+  createGlobalAdminAccount(@Body() body: CreateGlobalAdminDto) {
     return this.accountService.createGlobalAdmin(body);
   }
 
@@ -54,12 +50,9 @@ export class AccountController {
   @Delete('/accounts/:username')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Global_Admin)
-  deleteAccount(
-    @Param('username') username: string 
-  ) {
+  deleteAccount(@Param('username') username: string) {
     return this.accountService.deleteAccount(username);
   }
-
 
   @Put('/change-password')
   @UseGuards(AuthGuard, RolesGuard)

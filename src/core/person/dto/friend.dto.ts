@@ -1,11 +1,10 @@
 import {
   IsIn,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString
 } from 'class-validator';
-import { FriendType } from './friend.enum';
+import { PersonalType } from '../person.enum';
 
 export class CreateFriendDto {
   @IsNotEmpty()
@@ -14,8 +13,8 @@ export class CreateFriendDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsIn(Object.values(FriendType))
-  type: FriendType;
+  @IsIn(Object.values(PersonalType))
+  type: PersonalType;
 
   @IsOptional()
   @IsString()
@@ -53,7 +52,7 @@ export class UpdateFriendDto {
 
   @IsOptional()
   @IsString()
-  type?: FriendType;
+  type?: PersonalType;
 
   @IsOptional()
   @IsString()

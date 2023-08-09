@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ICurrentAccount } from '../../decorators/account.decorator';
 import { PrismaService } from '../../shared/services/prisma.service';
-import { CreateFriendDto, UpdateFriendDto } from './friend.dto';
+import { CreateFriendDto, UpdateFriendDto } from './dto/friend.dto';
+import { PersonalType } from './person.enum';
+import { getVietnameseFirstName } from '../../shared/utils/string.util';
 
 @Injectable()
 export class FriendService {
@@ -14,6 +16,7 @@ export class FriendService {
     await this.prisma.person.create({
       data: {
         ...body,
+        firstName: getVietnameseFirstName(body.name),
         organization: { connect: { id: organizationId } },
         createdBy: accountId
       }
@@ -21,7 +24,9 @@ export class FriendService {
   }
 
   getByFilter({ organizationId }: ICurrentAccount) {
-    return this.prisma.person.findMany({ where: { organizationId } });
+    return this.prisma.person.findMany({
+      where: { organizationId, type: { notIn: [PersonalType.Member] } }
+    });
   }
 
   async getOne({ organizationId }: ICurrentAccount, friendId: string) {

@@ -17,7 +17,7 @@ import {
   CurrentAccount,
   ICurrentAccount
 } from '../../decorators/account.decorator';
-import { CreateFriendDto, UpdateFriendDto } from './friend.dto';
+import { CreateFriendDto, UpdateFriendDto } from './dto/friend.dto';
 
 @Controller('friends')
 export class FriendController {

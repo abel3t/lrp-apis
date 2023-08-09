@@ -5,9 +5,10 @@ import {
   CreateMemberDto,
   GetMembersDto,
   UpdateMemberDto
-} from './member.dto';
+} from './dto/member.dto';
 import { PrismaService } from '../../shared/services/prisma.service';
 import { getVietnameseFirstName } from '../../shared/utils/string.util';
+import { PersonalType } from './person.enum';
 
 @Injectable()
 export class MemberService {
@@ -24,6 +25,7 @@ export class MemberService {
     await this.prisma.person.create({
       data: {
         ...body,
+        type: PersonalType.Member,
         curator,
         firstName: getVietnameseFirstName(body.name),
         organization: { connect: { id: organizationId } },
@@ -45,7 +47,7 @@ export class MemberService {
     }
 
     return this.prisma.person.findMany({
-      where: { organizationId, curatorId, name },
+      where: { organizationId, curatorId, name, type: PersonalType.Member },
       include: { curator: true },
       orderBy: { firstName: 'asc' }
     });

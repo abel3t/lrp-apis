@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/services/prisma.service';
-import { FriendType } from '../friend/friend.enum';
 import { CarePriority } from '../care/care.enum';
 import { arraySortBy } from '../../shared/utils/array.util';
 import { TopCaringTitle } from './dashboard.enum';
@@ -14,38 +13,34 @@ import {
   getFromDateFilter,
   getToDateFilter
 } from '../../shared/utils/date.util';
+import { PersonalType } from '../person/person.enum';
 
 @Injectable()
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getOverview({ organizationId }: ICurrentAccount, { set }: OverviewDto) {
-    const [members, friends] = await Promise.all([
-      this.prisma.person.findMany({
-        where: {
-          organizationId,
-          createdAt: {
-            lte: getToDateFilter(set)
-          }
-        },
-        select: { id: true, createdAt: true }
-      }),
-      this.prisma.person.findMany({
-        where: {
-          organizationId,
-          createdAt: {
-            lte: getToDateFilter(set)
-          }
-        },
-        select: { id: true, type: true, createdAt: true }
-      })
-    ]);
+    const people = await this.prisma.person.findMany({
+      where: {
+        organizationId,
+        createdAt: {
+          lte: getToDateFilter(set)
+        }
+      },
+      select: { id: true, type: true, createdAt: true }
+    });
 
+    let totalMembers = 0;
     let totalFriends = 0;
     let totalUnbelievers = 0;
 
-    friends.forEach((friend) => {
-      if (friend.type === FriendType.Unbeliever) {
+    people.forEach((person) => {
+      if (person.type === PersonalType.Member) {
+        ++totalMembers;
+        return;
+      }
+
+      if (person.type === PersonalType.Unbeliever) {
         ++totalUnbelievers;
       } else {
         ++totalFriends;
@@ -53,10 +48,10 @@ export class DashboardService {
     });
 
     return {
-      totalMembers: members.length,
+      totalMembers,
       totalFriends,
       totalUnbelievers,
-      totalPeople: members.length + totalFriends + totalUnbelievers
+      totalPeople: people.length
     };
   }
 
@@ -76,8 +71,8 @@ export class DashboardService {
       include: { person: true, curator: true }
     });
 
-    let warningCares = [];
-    let normalCares = [];
+    const warningCares = [];
+    const normalCares = [];
     cares.forEach((care) => {
       if (care.priority === CarePriority.Warning) {
         warningCares.push(care);
@@ -139,7 +134,7 @@ export class DashboardService {
   }
 }
 
-const getTitleByCareTimes = (careTimes: number = 0, index: number) => {
+const getTitleByCareTimes = (careTimes = 0, index: number) => {
   if (!careTimes) {
     return TopCaringTitle.NotGood;
   }

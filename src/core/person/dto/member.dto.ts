@@ -4,8 +4,8 @@ import {
   IsString,
   ValidateNested
 } from 'class-validator';
-import { DiscipleshipProcess, Gender, MaritalStatus } from './member.enum';
 import { Type } from 'class-transformer';
+import { DiscipleshipProcess, Gender, MaritalStatus } from '../person.enum';
 
 class Curator {
   @IsString()
@@ -81,27 +81,11 @@ export class CreateMemberDto {
 
   @IsOptional()
   @IsString()
-  memberClassDay?: string;
-
-  @IsOptional()
-  @IsString()
-  walkWithGodClassDay?: string;
-
-  @IsOptional()
-  @IsString()
   weddingDate?: string;
 
   @IsOptional()
   @IsString()
-  giveChildDay?: string;
-
-  @IsOptional()
-  @IsString()
   hometown?: string;
-
-  @IsOptional()
-  @IsString()
-  otherRole?: string;
 }
 
 export class UpdateMemberDto {
@@ -168,27 +152,11 @@ export class UpdateMemberDto {
 
   @IsOptional()
   @IsString()
-  memberClassDay?: string;
-
-  @IsOptional()
-  @IsString()
-  walkWithGodClassDay?: string;
-
-  @IsOptional()
-  @IsString()
   weddingDate?: string;
 
   @IsOptional()
   @IsString()
-  giveChildDay?: string;
-
-  @IsOptional()
-  @IsString()
   hometown?: string;
-
-  @IsOptional()
-  @IsString()
-  otherRole?: string;
 }
 
 export class AssignMemberForCuratorDto {
