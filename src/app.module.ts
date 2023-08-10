@@ -8,6 +8,7 @@ import { SharedModule } from './shared/shared.module';
 import { DashboardModule } from './core/dashboard/dashboard.module';
 import { S3Service } from './shared/services/s3.service';
 import { PersonModule } from './core/person/person.module';
+import { AbsenceModule } from './core/absence/absence.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { PersonModule } from './core/person/person.module';
     CareModule,
     PersonModule,
     OrganizationModule,
-    DashboardModule
+    DashboardModule,
+    AbsenceModule
   ],
   controllers: [AppController],
   providers: [JwtStrategy, S3Service],

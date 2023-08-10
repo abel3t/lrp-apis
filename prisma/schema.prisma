@@ -24,7 +24,8 @@ model Organization {
   updatedAt DateTime @updatedAt @db.Timestamptz(0)
   updatedBy String?
 
-  isDeleted Boolean @default(false)
+  isDeleted Boolean   @default(false)
+  absences  Absence[]
 
   @@index([isDeleted])
 }
@@ -48,7 +49,8 @@ model Account {
   updatedAt DateTime @updatedAt @db.Timestamptz(0)
   updatedBy String?
 
-  isDeleted Boolean @default(false)
+  isDeleted Boolean   @default(false)
+  absences  Absence[]
 
   @@index([isDeleted])
 }
@@ -90,7 +92,8 @@ model Person {
   updatedAt DateTime @updatedAt @db.Timestamptz(0)
   updatedBy String?
 
-  isDeleted Boolean @default(false)
+  isDeleted Boolean   @default(false)
+  absences  Absence[]
 
   @@index([isDeleted])
 }
@@ -151,4 +154,26 @@ model GroupsMembers {
   updatedBy String?
 
   @@id([personId, groupId])
+}
+
+model Absence {
+  id             String       @id @default(cuid())
+  description    String?
+  type           String
+  date           DateTime
+  curator        Account      @relation(fields: [curatorId], references: [id])
+  curatorId      String
+  person         Person       @relation(fields: [personId], references: [id])
+  personId       String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+
+  createdAt DateTime @default(now()) @db.Timestamptz(0)
+  createdBy String?
+  updatedAt DateTime @updatedAt @db.Timestamptz(0)
+  updatedBy String?
+
+  isDeleted Boolean @default(false)
+
+  @@index([isDeleted])
 }
