@@ -26,6 +26,7 @@ async function bootstrap() {
 
   const fAdapt = new FastifyAdapter();
   fAdapt.enableCors(CORS_OPTIONS);
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   fAdapt.register(require('fastify-multipart'));
 
   const app = await NestFactory.create<NestFastifyApplication>(

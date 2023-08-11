@@ -13,7 +13,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       });
 
     this.$use(async (params, next) => {
-      const useSoftDeleteModels: string[] = ['Member', 'Friend', 'Care', 'Account'];
+      const useSoftDeleteModels: string[] = [
+        'Person',
+        'Care',
+        'Account',
+        'Absence'
+      ];
 
       if (useSoftDeleteModels.includes(params.model)) {
         switch (params.action) {

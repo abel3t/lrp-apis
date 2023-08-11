@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/services/prisma.service';
 import { CarePriority } from '../care/care.enum';
 import { arraySortBy } from '../../shared/utils/array.util';
-import { TopCaringTitle } from './dashboard.enum';
+import { PresentReportType, TopCaringTitle } from './dashboard.enum';
 import { ICurrentAccount } from '../../decorators/account.decorator';
 import {
   NeedingMoreCareDto,
   OverviewDto,
+  PresentDto,
   TopCaringPeopleDto
 } from './dashboard.dto';
 import {
@@ -14,6 +15,7 @@ import {
   getToDateFilter
 } from '../../shared/utils/date.util';
 import { PersonalType } from '../person/person.enum';
+import { eachDayOfInterval, format, startOfDay, startOfWeek, subMinutes, subWeeks } from 'date-fns';
 
 @Injectable()
 export class DashboardService {
@@ -131,6 +133,79 @@ export class DashboardService {
         title: getTitleByCareTimes(care.careTimes, index)
       };
     });
+  }
+
+  async getPresents(
+    { organizationId }: ICurrentAccount,
+    { type, amount }: PresentDto
+  ) {
+    const DATE_FORMAT = 'dd/MM/yyyy';
+
+    const [members, absences] = await Promise.all([
+      this.prisma.person.findMany({
+        where: {
+          organizationId,
+          type: PersonalType.Member
+        }
+      }),
+      this.prisma.absence.findMany({
+        where: {
+          organizationId
+        }
+      })
+    ]);
+
+    const groupedMembers: Record<string, any> = {};
+    const groupedAbsences: Record<string, any> = {};
+    members?.forEach((member) => {
+      if (!groupedMembers[format(member.createdAt, DATE_FORMAT)]) {
+        groupedMembers[format(member.createdAt, DATE_FORMAT)] = [];
+      }
+
+      groupedMembers[format(member.createdAt, DATE_FORMAT)].push(member);
+    });
+
+    absences?.forEach((absence) => {
+      if (!groupedAbsences[format(absence.date, DATE_FORMAT)]) {
+        groupedAbsences[format(absence.date, DATE_FORMAT)] = [];
+      }
+
+      groupedAbsences[format(absence.date, DATE_FORMAT)].push(absence);
+    });
+
+    const historiesMap: Record<string, any> = {};
+    if (type === PresentReportType.Week) {
+      const week = startOfWeek(new Date());
+      const pastWeek = subWeeks(week, amount - 1);
+
+      const coordinateMember = await this.prisma.person.findMany({
+        where: {
+          organizationId,
+          createdAt: {
+            lt: pastWeek
+          }
+        }
+      });
+
+      eachDayOfInterval({
+        start: pastWeek,
+        end: new Date()
+      }).map((date) => {
+        if (!historiesMap[format(startOfWeek(date), DATE_FORMAT)]) {
+          historiesMap[format(startOfWeek(date), DATE_FORMAT)] = [];
+        }
+        console.log('date', format(date, DATE_FORMAT));
+        console.log('group', groupedMembers[format(date, DATE_FORMAT)] );
+
+        historiesMap[format(startOfWeek(date), DATE_FORMAT)].push({
+          member: groupedMembers[format(date, DATE_FORMAT)] || {},
+          absence: groupedAbsences[format(date, DATE_FORMAT)] || {}
+        });
+      });
+      return { coordinateMember, historiesMap };
+
+    }
+
   }
 }
 

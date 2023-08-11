@@ -7,6 +7,7 @@ import {
   GetAbsencesDto,
   UpdateAbsenceDto
 } from './absence.dto';
+import { startOfDay } from 'date-fns';
 
 @Injectable()
 export class AbsenceService {
@@ -21,6 +22,7 @@ export class AbsenceService {
     await this.prisma.absence.create({
       data: {
         ...data,
+        date: startOfDay(new Date(data.date) || new Date()),
         person: { connect: { id: member.id } },
         curator: { connect: { id: accountId } },
         organization: { connect: { id: organizationId } },

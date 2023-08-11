@@ -10,9 +10,9 @@ import {
 } from '../../decorators/account.decorator';
 import {
   NeedingMoreCareDto,
-  OverviewDto,
+  OverviewDto, PresentDto,
   TopCaringPeopleDto
-} from './dashboard.dto';
+} from "./dashboard.dto";
 
 @Controller('dashboard')
 export class DashboardController {
@@ -46,5 +46,15 @@ export class DashboardController {
     @Query() filter: TopCaringPeopleDto
   ) {
     return this.dashboardService.getTopCaringPeople(account, filter);
+  }
+
+  @Get('presents')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  getPresent(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: PresentDto
+  ) {
+    return this.dashboardService.getPresents(account, filter);
   }
 }
