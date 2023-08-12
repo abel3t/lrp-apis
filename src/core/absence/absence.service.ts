@@ -7,7 +7,10 @@ import {
   GetAbsencesDto,
   UpdateAbsenceDto
 } from './absence.dto';
-import { startOfDay } from 'date-fns';
+import { eachDayOfInterval, format, isSunday, startOfDay, startOfWeek, subWeeks } from 'date-fns';
+import { PersonalType } from '../person/person.enum';
+import { PresentReportType } from '../dashboard/dashboard.enum';
+import { PresentDto } from '../dashboard/dashboard.dto';
 
 @Injectable()
 export class AbsenceService {
@@ -86,13 +89,18 @@ export class AbsenceService {
       throw new BadRequestException('This absence is not found.');
     }
 
-    const member = body?.member?.id
-      ? { connect: { id: body.member.id } }
-      : undefined;
+    const { member, ...data } = body;
+
+    let person;
+    if (body.member === null) {
+      person = { disconnect: true };
+    } else {
+      person = { connect: { id: body.member.id } };
+    }
 
     await this.prisma.absence.update({
       where: { id: absenceId },
-      data: { ...body, person: member, updatedBy: accountId }
+      data: { ...data, person, updatedBy: accountId }
     });
   }
 
@@ -108,5 +116,75 @@ export class AbsenceService {
         date: 'desc'
       }
     });
+  }
+
+  async getSundayServiceHistories(
+    { organizationId }: ICurrentAccount,
+    memberId: string
+  ) {
+    const DATE_FORMAT = 'dd/MM/yyyy';
+
+    const [member, absences] = await Promise.all([
+      this.prisma.person.findFirst({
+        where: {
+          id: memberId,
+          organizationId,
+          type: PersonalType.Member
+        }
+      }),
+      this.prisma.absence.findMany({
+        where: {
+          organizationId
+        }
+      })
+    ]);
+
+    if (!member) {
+      throw new BadRequestException('Member is not found.');
+    }
+
+    const groupedAbsences: Record<string, any> = {};
+    absences?.forEach((absence) => {
+      if (!groupedAbsences[format(startOfWeek(absence.date), DATE_FORMAT)]) {
+        groupedAbsences[format(startOfWeek(absence.date), DATE_FORMAT)] = [];
+      }
+
+      groupedAbsences[format(startOfWeek(absence.date), DATE_FORMAT)].push(
+        absence
+      );
+    });
+
+    const week = startOfWeek(new Date());
+    const pastWeek = subWeeks(week, 52);
+    const histories = [];
+
+    eachDayOfInterval({
+      start: pastWeek,
+      end: new Date()
+    }).map((date) => {
+      if (!isSunday(date)) {
+        return;
+      }
+
+      if (groupedAbsences[format(date, DATE_FORMAT)]?.length) {
+        const absence = groupedAbsences[format(date, DATE_FORMAT)]?.[0];
+
+        histories.push({
+          date,
+          status: 'absent',
+          type: absence.type,
+          description: absence.description
+        });
+        return;
+      }
+
+      histories.push({
+        date,
+        status: 'present',
+        description: 'Good!'
+      });
+    });
+
+    return histories.reverse();
   }
 }

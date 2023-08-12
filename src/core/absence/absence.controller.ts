@@ -72,9 +72,7 @@ export class AbsenceController {
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  deleteCare(
-    @Param('id') absenceId: string
-  ) {
+  deleteCare(@Param('id') absenceId: string) {
     return this.absenceService.delete(absenceId);
   }
 
@@ -86,5 +84,15 @@ export class AbsenceController {
     @Param('memberId') memberId: string
   ) {
     return this.absenceService.getMemberAbsences(account, memberId);
+  }
+
+  @Get('/sunday-service-histories/members/:memberId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  getSundayServiceHistories(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('memberId') memberId: string
+  ) {
+    return this.absenceService.getSundayServiceHistories(account, memberId);
   }
 }

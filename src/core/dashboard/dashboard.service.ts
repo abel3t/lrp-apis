@@ -25,11 +25,11 @@ export class DashboardService {
     const people = await this.prisma.person.findMany({
       where: {
         organizationId,
-        createdAt: {
+        memberDay: {
           lte: getToDateFilter(set)
         }
       },
-      select: { id: true, type: true, createdAt: true }
+      select: { id: true, type: true, memberDay: true }
     });
 
     let totalMembers = 0;
@@ -158,11 +158,15 @@ export class DashboardService {
     const groupedMembers: Record<string, any> = {};
     const groupedAbsences: Record<string, any> = {};
     members?.forEach((member) => {
-      if (!groupedMembers[format(member.createdAt, DATE_FORMAT)]) {
-        groupedMembers[format(member.createdAt, DATE_FORMAT)] = [];
+      if (!member.memberDay) {
+        return;
       }
 
-      groupedMembers[format(member.createdAt, DATE_FORMAT)].push(member);
+      if (!groupedMembers[format(member.memberDay, DATE_FORMAT)]) {
+        groupedMembers[format(member.memberDay, DATE_FORMAT)] = [];
+      }
+
+      groupedMembers[format(member.memberDay, DATE_FORMAT)].push(member);
     });
 
     absences?.forEach((absence) => {
@@ -181,7 +185,7 @@ export class DashboardService {
       const coordinateMember = await this.prisma.person.findMany({
         where: {
           organizationId,
-          createdAt: {
+          memberDay: {
             lt: pastWeek
           }
         }
@@ -194,18 +198,33 @@ export class DashboardService {
         if (!historiesMap[format(startOfWeek(date), DATE_FORMAT)]) {
           historiesMap[format(startOfWeek(date), DATE_FORMAT)] = [];
         }
-        console.log('date', format(date, DATE_FORMAT));
-        console.log('group', groupedMembers[format(date, DATE_FORMAT)] );
 
         historiesMap[format(startOfWeek(date), DATE_FORMAT)].push({
-          member: groupedMembers[format(date, DATE_FORMAT)] || {},
-          absence: groupedAbsences[format(date, DATE_FORMAT)] || {}
+          members: groupedMembers[format(date, DATE_FORMAT)] || [],
+          absences: groupedAbsences[format(date, DATE_FORMAT)] || []
         });
       });
-      return { coordinateMember, historiesMap };
 
+      let memberAmount = coordinateMember?.length || 0;
+      return Object.entries(historiesMap).map(
+        ([date, histories]: [string, any]) => {
+          let absenceAmount = 0;
+
+
+          histories?.forEach(({ members, absences }) => {
+
+            memberAmount += members?.length || 0;
+            absenceAmount += absences?.length || 0;
+          });
+
+          return {
+            date,
+            memberAmount,
+            absenceAmount
+          };
+        }
+      );
     }
-
   }
 }
 
