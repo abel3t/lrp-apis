@@ -10,7 +10,6 @@
     "sourceMap": true,
     "outDir": "./build",
     "baseUrl": "./src",
-    "rootDir": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -18,8 +17,5 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  },
-  "exclude": [
-    "node_modules",
-  ]
+  }
 }
