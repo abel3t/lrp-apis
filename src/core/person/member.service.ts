@@ -22,12 +22,16 @@ export class MemberService {
     const curator = body?.curator?.id
       ? { connect: { id: body.curator.id } }
       : undefined;
+    const friend = body?.friend?.id
+      ? { connect: { id: body.friend.id } }
+      : undefined;
 
     await this.prisma.person.create({
       data: {
         ...body,
         type: PersonalType.Member,
         curator,
+        friend,
         createdAt: startOfDay(new Date()),
         firstName: getVietnameseFirstName(body.name),
         organization: { connect: { id: organizationId } },
@@ -50,7 +54,7 @@ export class MemberService {
 
     return this.prisma.person.findMany({
       where: { organizationId, curatorId, name, type: PersonalType.Member },
-      include: { curator: true },
+      include: { curator: true, friend: true },
       orderBy: { firstName: 'asc' }
     });
   }
@@ -58,7 +62,7 @@ export class MemberService {
   async getOne({ organizationId }: ICurrentAccount, memberId: string) {
     const existedMember = await this.prisma.person.findFirst({
       where: { id: memberId, organization: { id: organizationId } },
-      include: { curator: true }
+      include: { curator: true, friend: true }
     });
 
     if (!existedMember) {
@@ -81,17 +85,22 @@ export class MemberService {
     }
 
     const firstName = body.name ? getVietnameseFirstName(body.name) : undefined;
-    let curator;
+    let curator, friend;
     if (body.curator === null) {
       curator = { disconnect: true };
-    }
-    if (body.curator?.id) {
+    } else {
       curator = { connect: { id: body.curator.id } };
+    }
+
+    if (body.friend === null) {
+      friend = { disconnect: true };
+    } else {
+      friend = { connect: { id: body.friend.id } };
     }
 
     await this.prisma.person.update({
       where: { id: memberId },
-      data: { ...body, curator, firstName, updatedBy: accountId }
+      data: { ...body, friend, curator, firstName, updatedBy: accountId }
     });
   }
 
@@ -140,7 +149,7 @@ export class MemberService {
     });
   }
 
-  getFriends({ organizationId }: ICurrentAccount, memberId: string) {
+  getFriendsOfMember({ organizationId }: ICurrentAccount, memberId: string) {
     return this.prisma.person.findMany({
       where: { organizationId, friendId: memberId },
       include: { friend: true, curator: true },

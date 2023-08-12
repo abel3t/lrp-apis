@@ -2,9 +2,21 @@ import {
   IsIn,
   IsNotEmpty,
   IsOptional,
-  IsString
+  IsString,
+  ValidateNested
 } from 'class-validator';
 import { PersonalType } from '../person.enum';
+import { Type } from 'class-transformer';
+
+export class Friend {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsString()
+  @IsOptional()
+  name: string;
+}
 
 export class CreateFriendDto {
   @IsNotEmpty()
@@ -19,6 +31,11 @@ export class CreateFriendDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Friend)
+  friend: Friend;
 
   @IsOptional()
   @IsString()
@@ -42,7 +59,19 @@ export class CreateFriendDto {
 
   @IsOptional()
   @IsString()
-  introducedBy?: string;
+  firstComeToLEC?: Date;
+
+  @IsOptional()
+  @IsString()
+  believeInJesusDay?: Date;
+
+  @IsOptional()
+  @IsString()
+  baptismalDay?: Date;
+
+  @IsOptional()
+  @IsString()
+  memberDay?: Date;
 }
 
 export class UpdateFriendDto {
@@ -53,6 +82,11 @@ export class UpdateFriendDto {
   @IsOptional()
   @IsString()
   type?: PersonalType;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Friend)
+  friend: Friend;
 
   @IsOptional()
   @IsString()
@@ -68,5 +102,17 @@ export class UpdateFriendDto {
 
   @IsOptional()
   @IsString()
-  introducedBy?: string;
+  firstComeToLEC?: Date;
+
+  @IsOptional()
+  @IsString()
+  believeInJesusDay?: Date;
+
+  @IsOptional()
+  @IsString()
+  baptismalDay?: Date;
+
+  @IsOptional()
+  @IsString()
+  memberDay?: Date;
 }

@@ -6,6 +6,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { DiscipleshipProcess, Gender, MaritalStatus } from '../person.enum';
+import { Friend } from './friend.dto';
 
 class Curator {
   @IsString()
@@ -26,6 +27,11 @@ export class CreateMemberDto {
   @ValidateNested()
   @Type(() => Curator)
   curator: Curator;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Friend)
+  friend: Friend;
 
   @IsOptional()
   @IsString()
@@ -73,6 +79,14 @@ export class CreateMemberDto {
 
   @IsOptional()
   @IsString()
+  baptismalDay?: string;
+
+  @IsOptional()
+  @IsString()
+  memberDay?: string;
+
+  @IsOptional()
+  @IsString()
   introducedBy?: string;
 
   @IsOptional()
@@ -99,12 +113,21 @@ export class UpdateMemberDto {
   curator: Curator;
 
   @IsOptional()
+  @ValidateNested()
+  @Type(() => Friend)
+  friend: Friend;
+
+  @IsOptional()
   @IsString()
   gender?: Gender;
 
   @IsOptional()
   @IsString()
   birthday?: string;
+
+  @IsOptional()
+  @IsString()
+  baptismalDay?: string;
 
   @IsOptional()
   @IsString()

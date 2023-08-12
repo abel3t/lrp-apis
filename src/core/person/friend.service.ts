@@ -13,9 +13,14 @@ export class FriendService {
     { id: accountId, organizationId }: ICurrentAccount,
     body: CreateFriendDto
   ) {
+    const friend = body?.friend?.id
+      ? { connect: { id: body.friend.id } }
+      : undefined;
+
     await this.prisma.person.create({
       data: {
         ...body,
+        friend,
         firstName: getVietnameseFirstName(body.name),
         organization: { connect: { id: organizationId } },
         createdBy: accountId
@@ -25,13 +30,15 @@ export class FriendService {
 
   getByFilter({ organizationId }: ICurrentAccount) {
     return this.prisma.person.findMany({
-      where: { organizationId, type: { notIn: [PersonalType.Member] } }
+      where: { organizationId, type: { notIn: [PersonalType.Member] } },
+      include: { friend: true }
     });
   }
 
   async getOne({ organizationId }: ICurrentAccount, friendId: string) {
     const existedFriend = await this.prisma.person.findFirst({
-      where: { id: friendId, organization: { id: organizationId } }
+      where: { id: friendId, organization: { id: organizationId } },
+      include: { friend: true }
     });
 
     if (!existedFriend) {
@@ -53,9 +60,16 @@ export class FriendService {
       throw new BadRequestException('This friend is not found.');
     }
 
+    let friend;
+    if (body.friend === null) {
+      friend = { disconnect: true };
+    } else {
+      friend = { connect: { id: body.friend.id } };
+    }
+
     await this.prisma.person.update({
       where: { id: friendId },
-      data: { ...body, updatedBy: accountId }
+      data: { ...body, friend, updatedBy: accountId }
     });
   }
 

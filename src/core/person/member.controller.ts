@@ -85,4 +85,14 @@ export class MemberController {
       curatorId
     });
   }
+
+  @Get(':id/friends')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  getFriendsOfMember(
+    @CurrentAccount() account: ICurrentAccount,
+    @Param('id') memberId: string
+  ) {
+    return this.memberService.getFriendsOfMember(account, memberId);
+  }
 }
