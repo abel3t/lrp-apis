@@ -96,7 +96,7 @@ export class DiscipleService {
 
   delete() {}
 
-  getMemberDisciples({ organizationId }: ICurrentAccount, memberId: string) {
+  getPersonDisciples({ organizationId }: ICurrentAccount, memberId: string) {
     return this.prisma.disciple.findMany({
       where: { organizationId, personId: memberId },
       include: { person: true, curator: true },

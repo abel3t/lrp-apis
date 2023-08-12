@@ -73,13 +73,17 @@ model Person {
   maritalStatus       String?
   description         String?
   discipleshipProcess String?
-  believeInJesusDay   DateTime?
-  firstComeToLEC      DateTime?
-  weddingDate         DateTime?
-  hometown            String?
-  newLifeMentor       String?
-  role                String?
-  type                String
+
+  firstComeToLEC    DateTime?
+  believeInJesusDay DateTime?
+  baptismalDay      DateTime?
+  memberDay         DateTime?
+
+  weddingDate   DateTime?
+  hometown      String?
+  newLifeMentor String?
+  role          String?
+  type          String
 
   cares     Care[]
   absences  Absence[]
@@ -90,6 +94,9 @@ model Person {
   organizationId String
   curator        Account?     @relation(fields: [curatorId], references: [id])
   curatorId      String?
+  friendId       String?
+  friend         Person?      @relation("FriendRelation", fields: [friendId], references: [id])
+  friends        Person[]     @relation("FriendRelation")
 
   createdAt DateTime @default(now()) @db.Timestamptz(0)
   createdBy String?

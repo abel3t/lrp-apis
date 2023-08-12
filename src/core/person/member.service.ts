@@ -139,4 +139,12 @@ export class MemberService {
       data: { curatorId }
     });
   }
+
+  getFriends({ organizationId }: ICurrentAccount, memberId: string) {
+    return this.prisma.person.findMany({
+      where: { organizationId, friendId: memberId },
+      include: { friend: true, curator: true },
+      orderBy: { firstName: 'asc' }
+    });
+  }
 }

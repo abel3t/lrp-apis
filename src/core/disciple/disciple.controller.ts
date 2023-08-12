@@ -76,13 +76,13 @@ export class DiscipleController {
     return this.discipleService.delete();
   }
 
-  @Get('/members/:memberId')
+  @Get('/people/:memberId')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon)
-  getMemberDisciples(
+  getPersonDisciples(
     @CurrentAccount() account: ICurrentAccount,
     @Param('memberId') memberId: string
   ) {
-    return this.discipleService.getMemberDisciples(account, memberId);
+    return this.discipleService.getPersonDisciples(account, memberId);
   }
 }
