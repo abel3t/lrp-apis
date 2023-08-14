@@ -55,7 +55,9 @@ export class UpdateAbsenceDto {
   type: AbsenceType;
 
   @IsNotEmpty()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   date: Date;
 
   @IsOptional()

@@ -4,9 +4,13 @@ import {
   IsString,
   ValidateNested
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { DiscipleshipProcess, Gender, MaritalStatus } from '../person.enum';
 import { Friend } from './friend.dto';
+import {
+  convertToStartOfUtcDate,
+  isValidDateString
+} from '../../../shared/utils/date.util';
 
 class Curator {
   @IsString()
@@ -38,7 +42,9 @@ export class CreateMemberDto {
   gender?: Gender;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   birthday?: string;
 
   @IsOptional()
@@ -70,19 +76,27 @@ export class CreateMemberDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   believeInJesusDay?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   firstComeToLEC?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   baptismalDay?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   memberDay?: string;
 
   @IsOptional()
@@ -122,11 +136,15 @@ export class UpdateMemberDto {
   gender?: Gender;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   birthday?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   baptismalDay?: string;
 
   @IsOptional()
@@ -158,11 +176,15 @@ export class UpdateMemberDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   believeInJesusDay?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   firstComeToLEC?: string;
 
   @IsOptional()
@@ -174,7 +196,9 @@ export class UpdateMemberDto {
   newLifeMentor?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   weddingDate?: string;
 
   @IsOptional()

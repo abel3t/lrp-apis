@@ -6,7 +6,11 @@ import {
   ValidateNested
 } from 'class-validator';
 import { PersonalType } from '../person.enum';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
+import {
+  convertToStartOfUtcDate,
+  isValidDateString
+} from '../../../shared/utils/date.util';
 
 export class Friend {
   @IsString()
@@ -54,23 +58,31 @@ export class CreateFriendDto {
   hometown?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   birthday?: Date;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   firstComeToLEC?: Date;
 
-  @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   believeInJesusDay?: Date;
 
-  @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   baptismalDay?: Date;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   memberDay?: Date;
 }
 
@@ -101,18 +113,26 @@ export class UpdateFriendDto {
   phone?: string;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   firstComeToLEC?: Date;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   believeInJesusDay?: Date;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   baptismalDay?: Date;
 
   @IsOptional()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   memberDay?: Date;
 }

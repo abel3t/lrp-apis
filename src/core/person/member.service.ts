@@ -9,7 +9,6 @@ import {
 import { PrismaService } from '../../shared/services/prisma.service';
 import { getVietnameseFirstName } from '../../shared/utils/string.util';
 import { PersonalType } from './person.enum';
-import { startOfDay } from 'date-fns';
 
 @Injectable()
 export class MemberService {
@@ -32,7 +31,6 @@ export class MemberService {
         type: PersonalType.Member,
         curator,
         friend,
-        createdAt: startOfDay(new Date()),
         firstName: getVietnameseFirstName(body.name),
         organization: { connect: { id: organizationId } },
         createdBy: accountId

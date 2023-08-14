@@ -15,7 +15,7 @@ import {
   getToDateFilter
 } from '../../shared/utils/date.util';
 import { PersonalType } from '../person/person.enum';
-import { eachDayOfInterval, format, startOfDay, startOfWeek, subMinutes, subWeeks } from 'date-fns';
+import { eachDayOfInterval, format, startOfWeek, subWeeks } from 'date-fns';
 
 @Injectable()
 export class DashboardService {
