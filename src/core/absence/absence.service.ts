@@ -7,10 +7,14 @@ import {
   GetAbsencesDto,
   UpdateAbsenceDto
 } from './absence.dto';
-import { eachDayOfInterval, format, isSunday, startOfDay, startOfWeek, subWeeks } from 'date-fns';
+import {
+  eachDayOfInterval,
+  format,
+  isSunday,
+  startOfWeek,
+  subWeeks
+} from 'date-fns';
 import { PersonalType } from '../person/person.enum';
-import { PresentReportType } from '../dashboard/dashboard.enum';
-import { PresentDto } from '../dashboard/dashboard.dto';
 
 @Injectable()
 export class AbsenceService {
@@ -25,7 +29,6 @@ export class AbsenceService {
     await this.prisma.absence.create({
       data: {
         ...data,
-        date: startOfDay(new Date(data.date) || new Date()),
         person: { connect: { id: member.id } },
         curator: { connect: { id: accountId } },
         organization: { connect: { id: organizationId } },

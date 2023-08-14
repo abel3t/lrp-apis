@@ -9,6 +9,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { AbsenceType } from './absence.enum';
 import { DateFilterSet } from '../care/care.enum';
+import { convertToStartOfUtcDate, isValidDateString } from '../../shared/utils/date.util';
 
 class AbsenceMember {
   @IsString()
@@ -32,7 +33,9 @@ export class CreateAbsenceDto {
   type: AbsenceType;
 
   @IsNotEmpty()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   date: Date;
 
   @IsOptional()

@@ -90,3 +90,27 @@ export const formatMonthDay = (date: Date | string) => {
 
   return `${month}`.padStart(2, '0') + '/' + `${day}`.padStart(2, '0');
 };
+
+export const isValidDateString = (dateString: any) => {
+  if (typeof dateString !== 'string') {
+    return false;
+  }
+
+  const timestamp = Date.parse(dateString);
+
+  return !isNaN(timestamp);
+};
+
+export const convertToStartOfUtcDate = (date: any): Date | null => {
+  if (!isValidDateString(date)) {
+    return null;
+  }
+
+  const stdDate = new Date(date);
+
+  const y = stdDate.getFullYear();
+  const m = stdDate.getMonth();
+  const d = stdDate.getDate();
+
+  return new Date(Date.UTC(y, m, d, 0, 0, 0));
+};
