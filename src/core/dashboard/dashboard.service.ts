@@ -210,7 +210,6 @@ export class DashboardService {
         ([date, histories]: [string, any]) => {
           let absenceAmount = 0;
 
-
           histories?.forEach(({ members, absences }) => {
 
             memberAmount += members?.length || 0;

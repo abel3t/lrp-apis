@@ -114,3 +114,20 @@ export const convertToStartOfUtcDate = (date: any): Date | null => {
 
   return new Date(Date.UTC(y, m, d, 0, 0, 0));
 };
+
+export const createStartOfDate = (utcOffset = 0) => {
+  const date = new Date();
+  const y = date.getFullYear();
+  const m = date.getMonth();
+  const d = date.getDate();
+
+  const utcDate = new Date(Date.UTC(y, m, d, 0, 0, 0));
+
+  if (!utcOffset) {
+    return utcDate;
+  }
+
+  utcDate.setMinutes(-utcOffset);
+
+  return utcDate;
+};

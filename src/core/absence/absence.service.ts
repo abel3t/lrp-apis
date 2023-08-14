@@ -1,7 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/services/prisma.service';
 import { ICurrentAccount } from '../../decorators/account.decorator';
-import { getToDateFilter } from '../../shared/utils/date.util';
+import {
+  createStartOfDate,
+  getToDateFilter
+} from '../../shared/utils/date.util';
 import {
   CreateAbsenceDto,
   GetAbsencesDto,
@@ -92,9 +95,9 @@ export class AbsenceService {
       throw new BadRequestException('This absence is not found.');
     }
 
-    const { member, ...data } = body;
+    const { member: _, ...data } = body;
 
-    let person;
+    let person: Record<string, any>;
     if (body.member === null) {
       person = { disconnect: true };
     } else {
@@ -126,6 +129,7 @@ export class AbsenceService {
     memberId: string
   ) {
     const DATE_FORMAT = 'dd/MM/yyyy';
+    const utcOffset = 420;
 
     const [member, absences] = await Promise.all([
       this.prisma.person.findFirst({
@@ -157,13 +161,13 @@ export class AbsenceService {
       );
     });
 
-    const week = startOfWeek(new Date());
+    const week = startOfWeek(createStartOfDate(utcOffset));
     const pastWeek = subWeeks(week, 52);
     const histories = [];
 
     eachDayOfInterval({
       start: pastWeek,
-      end: new Date()
+      end: createStartOfDate(utcOffset)
     }).map((date) => {
       if (!isSunday(date)) {
         return;
