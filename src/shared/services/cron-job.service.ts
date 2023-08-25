@@ -16,18 +16,19 @@ export class CronJobService {
 
   private readonly logger = new Logger(CronJobService.name);
 
-  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: VietNamTimezone })
+  // @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: VietNamTimezone })
   async reminderTodayBirthday() {
     const today = new Date();
     const todayDay = today.getDate();
     const todayMonth = today.getMonth() + 1;
 
     const members: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM "Member"
+        SELECT * FROM "People"
         WHERE 
           EXTRACT(DAY FROM "birthday") = ${todayDay}  
           AND EXTRACT(MONTH FROM "birthday") = ${todayMonth}
           AND "organizationId" = ${AppConfig.MAIL.ORGANIZATION_ID}
+          AND "type" = 'Member'
           AND "isDeleted" = false`;
 
     if (!members.length) {
@@ -61,20 +62,21 @@ export class CronJobService {
     this.logger.debug('Cronjob started at 9:00 AM', 'reminderTodayBirthday');
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_9PM, { timeZone: VietNamTimezone })
+  // @Cron(CronExpression.EVERY_DAY_AT_9PM, { timeZone: VietNamTimezone })
   async reminderTomorrowBirthday() {
-    let tomorrow = new Date();
+    const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const tomorrowDay = tomorrow.getDate();
     const tomorrowMonth = tomorrow.getMonth() + 1;
 
     const members: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM "Member"
+        SELECT * FROM "People"
         WHERE 
           EXTRACT(DAY FROM "birthday") = ${tomorrowDay}  
           AND EXTRACT(MONTH FROM "birthday") = ${tomorrowMonth}
           AND "organizationId" = ${AppConfig.MAIL.ORGANIZATION_ID}
+          AND "type" = 'Member'
           AND "isDeleted" = false`;
 
     members.forEach((member) => {
@@ -104,7 +106,7 @@ export class CronJobService {
     this.logger.debug('Cronjob started at 9:00 PM', 'reminderTomorrowBirthday');
   }
 
-  @Cron(EVERY_10TH_DAY_OF_MONTH_AT_9AM, { timeZone: VietNamTimezone })
+  // @Cron(EVERY_10TH_DAY_OF_MONTH_AT_9AM, { timeZone: VietNamTimezone })
   async reminderQuarterBirthday() {
     const MONTHS_PER_QUARTER = 3;
     const END_DATE_OF_MONTH = 31;
@@ -122,12 +124,13 @@ export class CronJobService {
     }
 
     const members: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM "Member"
+        SELECT * FROM "People"
         WHERE 
           EXTRACT(DAY FROM "birthday") <= ${END_DATE_OF_MONTH}  
           AND EXTRACT(MONTH FROM "birthday") <= ${currentMonth}
           AND EXTRACT(MONTH FROM "birthday") > ${lastQuarterMonth}
           AND "organizationId" = ${AppConfig.MAIL.ORGANIZATION_ID}
+          AND "type" = 'Member'
           AND "isDeleted" = false`;
 
     if (!members.length) {
@@ -144,10 +147,9 @@ export class CronJobService {
         birthday: member.birthday
       }));
 
-    birthdayLists
-      .sort((a, b) => {
-        return formatMonthDay(a.birthday) > formatMonthDay(b.birthday) ? 1 : -1;
-      });
+    birthdayLists.sort((a, b) => {
+      return formatMonthDay(a.birthday) > formatMonthDay(b.birthday) ? 1 : -1;
+    });
 
     this.mailService.sendQuarterBirthday({
       subject: `[LEC Q10]: Sinh nhật quý - hôm nay là ngày chuẩn bị sinh nhật quý rồi đấy! 🎂🎁🎉🥳`,
