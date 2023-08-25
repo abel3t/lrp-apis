@@ -42,7 +42,13 @@ export class AccountController {
 
   @Get('/profile')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Global_Admin, Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(
+    Role.Global_Admin,
+    Role.Pastor,
+    Role.Staff,
+    Role.Deacon,
+    Role.Missionary
+  )
   getAccount(@CurrentAccount() { username }: ICurrentAccount) {
     return this.accountService.getAccount(username);
   }
@@ -56,7 +62,13 @@ export class AccountController {
 
   @Put('/change-password')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Global_Admin, Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(
+    Role.Global_Admin,
+    Role.Pastor,
+    Role.Staff,
+    Role.Deacon,
+    Role.Missionary
+  )
   changePassword(
     @CurrentAccount() { username }: ICurrentAccount,
     @Body() body: ChangePasswordDto
@@ -66,7 +78,7 @@ export class AccountController {
 
   @Get('curators')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getCurators(@CurrentAccount() account: ICurrentAccount) {
     return this.accountService.getCurators(account);
   }

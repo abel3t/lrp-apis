@@ -23,7 +23,7 @@ export class MemberController {
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   createMember(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: CreateMemberDto
@@ -33,7 +33,7 @@ export class MemberController {
 
   @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   updateMember(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: UpdateMemberDto,
@@ -44,7 +44,7 @@ export class MemberController {
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMembers(
     @CurrentAccount() account: ICurrentAccount,
     @Query() filter: GetMembersDto
@@ -54,7 +54,7 @@ export class MemberController {
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') memberId: string
@@ -64,7 +64,7 @@ export class MemberController {
 
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   deleteMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') memberId: string
@@ -74,7 +74,7 @@ export class MemberController {
 
   @Put(':memberId/assignees/:curatorId')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   assignMemberToCurator(
     @CurrentAccount() account: ICurrentAccount,
     @Param('memberId') memberId: string,
@@ -88,7 +88,7 @@ export class MemberController {
 
   @Get(':id/friends')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getFriendsOfMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') memberId: string

@@ -10,9 +10,10 @@ import {
 } from '../../decorators/account.decorator';
 import {
   NeedingMoreCareDto,
-  OverviewDto, PresentDto,
+  OverviewDto,
+  PresentDto,
   TopCaringPeopleDto
-} from "./dashboard.dto";
+} from './dashboard.dto';
 
 @Controller('dashboard')
 export class DashboardController {
@@ -20,7 +21,7 @@ export class DashboardController {
 
   @Get('overview')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getOverview(
     @CurrentAccount() account: ICurrentAccount,
     @Query() filter: OverviewDto
@@ -50,7 +51,7 @@ export class DashboardController {
 
   @Get('presents')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getPresent(
     @CurrentAccount() account: ICurrentAccount,
     @Query() filter: PresentDto

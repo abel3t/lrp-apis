@@ -30,7 +30,7 @@ export class DiscipleController {
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   createDisciple(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: CreateDiscipleDto
@@ -40,7 +40,7 @@ export class DiscipleController {
 
   @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   updateDisciple(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: UpdateDiscipleDto,
@@ -51,7 +51,7 @@ export class DiscipleController {
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getDisciples(
     @CurrentAccount() account: ICurrentAccount,
     @Query() filter: GetDisciplesDto
@@ -61,7 +61,7 @@ export class DiscipleController {
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') discipleId: string
@@ -71,14 +71,14 @@ export class DiscipleController {
 
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   deleteDisciple() {
     return this.discipleService.delete();
   }
 
   @Get('/people/:memberId')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getPersonDisciples(
     @CurrentAccount() account: ICurrentAccount,
     @Param('memberId') memberId: string

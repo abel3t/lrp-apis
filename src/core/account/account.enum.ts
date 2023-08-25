@@ -3,5 +3,6 @@ export enum Role {
   Admin = 'Admin',
   Pastor = 'Pastor',
   Deacon = 'Deacon',
-  Staff = 'Staff'
+  Staff = 'Staff',
+  Missionary = 'Missionary'
 }

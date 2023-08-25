@@ -15,14 +15,14 @@ export class PeopleController {
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getFriends(@CurrentAccount() account: ICurrentAccount) {
     return this.peopleService.getByFilter(account);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') peopleId: string

@@ -25,7 +25,7 @@ export class FriendController {
 
   @Post()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   createFriend(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: CreateFriendDto
@@ -35,7 +35,7 @@ export class FriendController {
 
   @Put(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   updateFriend(
     @CurrentAccount() account: ICurrentAccount,
     @Body() body: UpdateFriendDto,
@@ -46,14 +46,14 @@ export class FriendController {
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getFriends(@CurrentAccount() account: ICurrentAccount) {
     return this.friendService.getByFilter(account);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') friendId: string
@@ -63,7 +63,7 @@ export class FriendController {
 
   @Delete(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   deleteFriend(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') friendId: string
