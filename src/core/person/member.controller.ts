@@ -15,7 +15,11 @@ import { RolesGuard } from 'guards/roles.guard';
 import { Roles } from 'decorators/roles.decorator';
 import { Role } from 'core/account/account.enum';
 import { CurrentAccount, ICurrentAccount } from 'decorators/account.decorator';
-import { CreateMemberDto, GetMembersDto, UpdateMemberDto } from './dto/member.dto';
+import {
+  CreateMemberDto,
+  GetMembersDto,
+  UpdateMemberDto
+} from './dto/member.dto';
 
 @Controller('members')
 export class MemberController {
