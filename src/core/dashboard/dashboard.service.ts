@@ -24,10 +24,7 @@ export class DashboardService {
   async getOverview({ organizationId }: ICurrentAccount, { set }: OverviewDto) {
     const people = await this.prisma.person.findMany({
       where: {
-        organizationId,
-        memberDay: {
-          lte: getToDateFilter(set)
-        }
+        organizationId
       },
       select: { id: true, type: true, memberDay: true }
     });
