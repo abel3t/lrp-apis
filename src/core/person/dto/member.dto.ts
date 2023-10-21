@@ -148,6 +148,12 @@ export class UpdateMemberDto {
   baptismalDay?: string;
 
   @IsOptional()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
+  memberDay?: string;
+
+  @IsOptional()
   @IsString()
   career?: string;
 

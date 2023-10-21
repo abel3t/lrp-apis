@@ -182,8 +182,9 @@ export class DashboardService {
       const coordinateMember = await this.prisma.person.findMany({
         where: {
           organizationId,
+          type: PersonalType.Member,
           memberDay: {
-            lt: pastWeek
+            lte: pastWeek
           }
         }
       });
