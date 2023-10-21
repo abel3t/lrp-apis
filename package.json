@@ -22,7 +22,7 @@
     "test:e2e": "jest --config src/test/jest-e2e.json"
   },
   "engines": {
-    "node": ">=16 <=16.x"
+    "node": ">=20 <=20.x"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",
