@@ -216,7 +216,7 @@ export class DashboardService {
 
           return {
             date,
-            memberAmount,
+            memberAmount: memberAmount - absenceAmount,
             absenceAmount
           };
         }
