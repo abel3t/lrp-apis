@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards
 } from '@nestjs/common';
 import { FriendService } from './friend.service';
@@ -17,7 +18,11 @@ import {
   CurrentAccount,
   ICurrentAccount
 } from '../../decorators/account.decorator';
-import { CreateFriendDto, UpdateFriendDto } from './dto/friend.dto';
+import {
+  CreateFriendDto,
+  GetFriendsDto,
+  UpdateFriendDto
+} from './dto/friend.dto';
 
 @Controller('friends')
 export class FriendController {
@@ -47,8 +52,11 @@ export class FriendController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
-  getFriends(@CurrentAccount() account: ICurrentAccount) {
-    return this.friendService.getByFilter(account);
+  getFriends(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: GetFriendsDto
+  ) {
+    return this.friendService.getByFilter(account, filter);
   }
 
   @Get(':id')

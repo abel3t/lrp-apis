@@ -136,3 +136,13 @@ export class UpdateFriendDto {
   )
   memberDay?: Date;
 }
+
+export class GetFriendsDto {
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsString()
+  curatorId: string;
+}

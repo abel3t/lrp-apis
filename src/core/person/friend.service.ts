@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ICurrentAccount } from '../../decorators/account.decorator';
 import { PrismaService } from '../../shared/services/prisma.service';
-import { CreateFriendDto, UpdateFriendDto } from './dto/friend.dto';
+import { CreateFriendDto, GetFriendsDto, UpdateFriendDto } from './dto/friend.dto';
 import { PersonalType } from './person.enum';
 import { getVietnameseFirstName } from '../../shared/utils/string.util';
 
@@ -28,10 +28,27 @@ export class FriendService {
     });
   }
 
-  getByFilter({ organizationId }: ICurrentAccount) {
+  getByFilter(
+    { organizationId }: ICurrentAccount,
+    { curatorId, search }: GetFriendsDto
+  ) {
+    let name;
+    if (search) {
+      name = {
+        contains: search,
+        mode: 'insensitive'
+      };
+    }
+
     return this.prisma.person.findMany({
-      where: { organizationId, type: { notIn: [PersonalType.Member] } },
-      include: { friend: true }
+      where: {
+        organizationId,
+        curatorId,
+        name,
+        type: { notIn: [PersonalType.Member] }
+      },
+      include: { curator: true, friend: true },
+      orderBy: { firstName: 'asc' }
     });
   }
 
