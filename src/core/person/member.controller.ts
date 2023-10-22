@@ -48,7 +48,7 @@ export class MemberController {
 
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMembers(
     @CurrentAccount() account: ICurrentAccount,
     @Query() filter: GetMembersDto
@@ -58,7 +58,7 @@ export class MemberController {
 
   @Get(':id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') memberId: string
@@ -92,7 +92,7 @@ export class MemberController {
 
   @Get(':id/friends')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getFriendsOfMember(
     @CurrentAccount() account: ICurrentAccount,
     @Param('id') memberId: string
