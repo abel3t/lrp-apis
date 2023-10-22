@@ -1,23 +1,27 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/services/prisma.service';
 import { ICurrentAccount } from '../../decorators/account.decorator';
-import { CreateCareDto, GetCaresDto, UpdateCareDto } from './care.dto';
+import {
+  CreateDiscipleDto,
+  GetDisciplesDto,
+  UpdateDiscipleDto
+} from './disciple.dto';
 import { getToDateFilter } from '../../shared/utils/date.util';
 
 @Injectable()
-export class CareService {
+export class DiscipleService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(
     { id: accountId, organizationId }: ICurrentAccount,
-    body: CreateCareDto
+    body: CreateDiscipleDto
   ) {
-    const { member, ...data } = body;
+    const { person, ...data } = body;
 
-    await this.prisma.care.create({
+    await this.prisma.disciple.create({
       data: {
         ...data,
-        person: { connect: { id: member.id } },
+        person: { connect: { id: person.id } },
         curator: { connect: { id: accountId } },
         organization: { connect: { id: organizationId } },
         createdBy: accountId
@@ -27,7 +31,7 @@ export class CareService {
 
   getByFilter(
     { organizationId }: ICurrentAccount,
-    { set, search, curatorId }: GetCaresDto
+    { set, search, curatorId }: GetDisciplesDto
   ) {
     let name;
     if (search) {
@@ -37,7 +41,7 @@ export class CareService {
       };
     }
 
-    return this.prisma.care.findMany({
+    return this.prisma.disciple.findMany({
       where: {
         organizationId,
         date: {
@@ -55,45 +59,45 @@ export class CareService {
     });
   }
 
-  async getOne({ organizationId }: ICurrentAccount, careId: string) {
-    const existedCare = await this.prisma.care.findFirst({
-      where: { id: careId, organization: { id: organizationId } },
+  async getOne({ organizationId }: ICurrentAccount, discipleId: string) {
+    const existedDisciple = await this.prisma.disciple.findFirst({
+      where: { id: discipleId, organization: { id: organizationId } },
       include: { person: true, curator: true }
     });
 
-    if (!existedCare) {
-      throw new BadRequestException('Care is not found.');
+    if (!existedDisciple) {
+      throw new BadRequestException('Disciple is not found.');
     }
 
-    return existedCare;
+    return existedDisciple;
   }
 
   async update(
     { id: accountId, organizationId }: ICurrentAccount,
-    careId: string,
-    body: UpdateCareDto
+    discipleId: string,
+    body: UpdateDiscipleDto
   ) {
-    const existedCare = await this.prisma.care.findUnique({
-      where: { id: careId }
+    const existedDisciple = await this.prisma.disciple.findUnique({
+      where: { id: discipleId }
     });
-    if (!existedCare) {
-      throw new BadRequestException('This care is not found.');
+    if (!existedDisciple) {
+      throw new BadRequestException('This disciple is not found.');
     }
 
-    const member = body?.member?.id
-      ? { connect: { id: body.member.id } }
+    const person = body?.person?.id
+      ? { connect: { id: body.person.id } }
       : undefined;
 
-    await this.prisma.care.update({
-      where: { id: careId },
-      data: { ...body, person: member, updatedBy: accountId }
+    await this.prisma.disciple.update({
+      where: { id: discipleId },
+      data: { ...body, person, updatedBy: accountId }
     });
   }
 
   delete() {}
 
-  getMemberCares({ organizationId }: ICurrentAccount, memberId: string) {
-    return this.prisma.care.findMany({
+  getPersonDisciples({ organizationId }: ICurrentAccount, memberId: string) {
+    return this.prisma.disciple.findMany({
       where: { organizationId, personId: memberId },
       include: { person: true, curator: true },
       orderBy: {

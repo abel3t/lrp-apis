@@ -6,10 +6,12 @@ import {
   IsString,
   ValidateNested
 } from 'class-validator';
-import { CarePriority, CareType, DateFilterSet } from './care.enum';
 import { Transform, Type } from 'class-transformer';
+import { AbsenceType } from './absence.enum';
+import { DateFilterSet } from '../care/care.enum';
+import { convertToStartOfUtcDate, isValidDateString } from '../../shared/utils/date.util';
 
-class CareMember {
+class AbsenceMember {
   @IsString()
   @IsNotEmpty()
   id: string;
@@ -19,65 +21,51 @@ class CareMember {
   name: string;
 }
 
-export class CreateCareDto {
+export class CreateAbsenceDto {
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => CareMember)
-  member: CareMember;
+  @Type(() => AbsenceMember)
+  member: AbsenceMember;
 
   @IsNotEmpty()
   @IsString()
-  @IsIn(Object.values(CareType))
-  type: CareType;
+  @IsIn(Object.values(AbsenceType))
+  type: AbsenceType;
 
   @IsNotEmpty()
-  @IsString()
-  @IsIn(Object.values(CarePriority))
-  priority: CarePriority;
-
-  @IsNotEmpty()
-  @IsString()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
   date: Date;
 
   @IsOptional()
   @IsString()
   description?: string;
-
-  @IsOptional()
-  @IsString()
-  image?: string;
 }
 
-export class UpdateCareDto {
-  @IsOptional()
+export class UpdateAbsenceDto {
+  @IsNotEmpty()
   @ValidateNested()
-  @Type(() => CareMember)
-  member: CareMember;
+  @Type(() => AbsenceMember)
+  member: AbsenceMember;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  @IsIn(Object.values(CareType))
-  type: CareType;
+  @IsIn(Object.values(AbsenceType))
+  type: AbsenceType;
 
-  @IsOptional()
-  @IsString()
-  @IsIn(Object.values(CarePriority))
-  priority: CarePriority;
-
-  @IsOptional()
-  @IsString()
-  date?: Date;
+  @IsNotEmpty()
+  @Transform(({ value }) =>
+    isValidDateString(value) ? convertToStartOfUtcDate(value) : null
+  )
+  date: Date;
 
   @IsOptional()
   @IsString()
   description?: string;
-
-  @IsOptional()
-  @IsString()
-  image?: string;
 }
 
-export class GetCaresDto {
+export class GetAbsencesDto {
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) =>

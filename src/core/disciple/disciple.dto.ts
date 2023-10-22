@@ -6,10 +6,10 @@ import {
   IsString,
   ValidateNested
 } from 'class-validator';
-import { CarePriority, CareType, DateFilterSet } from './care.enum';
+import { DisciplePriority, DiscipleType, DateFilterSet } from './disciple.enum';
 import { Transform, Type } from 'class-transformer';
 
-class CareMember {
+class DisciplePerson {
   @IsString()
   @IsNotEmpty()
   id: string;
@@ -18,22 +18,22 @@ class CareMember {
   @IsOptional()
   name: string;
 }
-
-export class CreateCareDto {
+  
+export class CreateDiscipleDto {
   @IsNotEmpty()
   @ValidateNested()
-  @Type(() => CareMember)
-  member: CareMember;
+  @Type(() => DisciplePerson)
+  person: DisciplePerson;
 
   @IsNotEmpty()
   @IsString()
-  @IsIn(Object.values(CareType))
-  type: CareType;
+  @IsIn(Object.values(DiscipleType))
+  type: DiscipleType;
 
   @IsNotEmpty()
   @IsString()
-  @IsIn(Object.values(CarePriority))
-  priority: CarePriority;
+  @IsIn(Object.values(DisciplePriority))
+  priority: DisciplePriority;
 
   @IsNotEmpty()
   @IsString()
@@ -48,21 +48,21 @@ export class CreateCareDto {
   image?: string;
 }
 
-export class UpdateCareDto {
+export class UpdateDiscipleDto {
   @IsOptional()
   @ValidateNested()
-  @Type(() => CareMember)
-  member: CareMember;
+  @Type(() => DisciplePerson)
+  person: DisciplePerson;
 
   @IsOptional()
   @IsString()
-  @IsIn(Object.values(CareType))
-  type: CareType;
+  @IsIn(Object.values(DiscipleType))
+  type: DiscipleType;
 
   @IsOptional()
   @IsString()
-  @IsIn(Object.values(CarePriority))
-  priority: CarePriority;
+  @IsIn(Object.values(DisciplePriority))
+  priority: DisciplePriority;
 
   @IsOptional()
   @IsString()
@@ -77,7 +77,7 @@ export class UpdateCareDto {
   image?: string;
 }
 
-export class GetCaresDto {
+export class GetDisciplesDto {
   @IsOptional()
   @IsNumber()
   @Transform(({ value }) =>

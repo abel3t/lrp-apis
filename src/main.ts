@@ -26,7 +26,8 @@ async function bootstrap() {
 
   const fAdapt = new FastifyAdapter();
   fAdapt.enableCors(CORS_OPTIONS);
-  fAdapt.register(require('fastify-multipart'));
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  fAdapt.register(require('@fastify/multipart'));
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -35,7 +36,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true
+      transform: true,
+      whitelist: true
     })
   );
   app.useGlobalFilters(new HttpExceptionFilter());

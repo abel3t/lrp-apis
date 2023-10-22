@@ -11,6 +11,7 @@ import {
 import {
   NeedingMoreCareDto,
   OverviewDto,
+  PresentDto,
   TopCaringPeopleDto
 } from './dashboard.dto';
 
@@ -20,7 +21,7 @@ export class DashboardController {
 
   @Get('overview')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(Role.Pastor, Role.Staff, Role.Deacon)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
   getOverview(
     @CurrentAccount() account: ICurrentAccount,
     @Query() filter: OverviewDto
@@ -46,5 +47,15 @@ export class DashboardController {
     @Query() filter: TopCaringPeopleDto
   ) {
     return this.dashboardService.getTopCaringPeople(account, filter);
+  }
+
+  @Get('presents')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Pastor, Role.Staff, Role.Deacon, Role.Missionary)
+  getPresent(
+    @CurrentAccount() account: ICurrentAccount,
+    @Query() filter: PresentDto
+  ) {
+    return this.dashboardService.getPresents(account, filter);
   }
 }

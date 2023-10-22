@@ -4,3 +4,8 @@ export enum TopCaringTitle {
   Normal = 'Normal',
   NotGood = 'NotGood'
 }
+
+export enum PresentReportType {
+  Week = 'Week',
+  Month = 'Month'
+}

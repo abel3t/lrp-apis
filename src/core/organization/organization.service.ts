@@ -71,7 +71,9 @@ export class OrganizationService {
     return this.prisma.organization.findMany();
   }
 
-  getOne() {}
+  getOne(id: string) {
+    return this.prisma.organization.findUnique({ where: { id } });
+  }
 
   getAdmins(organizationId: string) {
     return this.prisma.account.findMany({ where: { organizationId } });

@@ -1,51 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/services/prisma.service';
-import { FriendType } from '../friend/friend.enum';
 import { CarePriority } from '../care/care.enum';
 import { arraySortBy } from '../../shared/utils/array.util';
-import { TopCaringTitle } from './dashboard.enum';
+import { PresentReportType, TopCaringTitle } from './dashboard.enum';
 import { ICurrentAccount } from '../../decorators/account.decorator';
 import {
   NeedingMoreCareDto,
   OverviewDto,
+  PresentDto,
   TopCaringPeopleDto
 } from './dashboard.dto';
 import {
   getFromDateFilter,
   getToDateFilter
 } from '../../shared/utils/date.util';
+import { PersonalType } from '../person/person.enum';
+import { eachDayOfInterval, format, startOfWeek, subWeeks } from 'date-fns';
 
 @Injectable()
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getOverview({ organizationId }: ICurrentAccount, { set }: OverviewDto) {
-    const [members, friends] = await Promise.all([
-      this.prisma.member.findMany({
-        where: {
-          organizationId,
-          createdAt: {
-            lte: getToDateFilter(set)
-          }
-        },
-        select: { id: true, createdAt: true }
-      }),
-      this.prisma.friend.findMany({
-        where: {
-          organizationId,
-          createdAt: {
-            lte: getToDateFilter(set)
-          }
-        },
-        select: { id: true, type: true, createdAt: true }
-      })
-    ]);
+    const people = await this.prisma.person.findMany({
+      where: {
+        organizationId
+      },
+      select: { id: true, type: true, memberDay: true }
+    });
 
+    let totalMembers = 0;
     let totalFriends = 0;
     let totalUnbelievers = 0;
 
-    friends.forEach((friend) => {
-      if (friend.type === FriendType.Unbeliever) {
+    people.forEach((person) => {
+      if (person.type === PersonalType.Member) {
+        ++totalMembers;
+        return;
+      }
+
+      if (person.type === PersonalType.Unbeliever) {
         ++totalUnbelievers;
       } else {
         ++totalFriends;
@@ -53,10 +47,10 @@ export class DashboardService {
     });
 
     return {
-      totalMembers: members.length,
+      totalMembers,
       totalFriends,
       totalUnbelievers,
-      totalPeople: members.length + totalFriends + totalUnbelievers
+      totalPeople: people.length
     };
   }
 
@@ -73,11 +67,11 @@ export class DashboardService {
           gte: getFromDateFilter(set)
         }
       },
-      include: { member: true, curator: true }
+      include: { person: true, curator: true }
     });
 
-    let warningCares = [];
-    let normalCares = [];
+    const warningCares = [];
+    const normalCares = [];
     cares.forEach((care) => {
       if (care.priority === CarePriority.Warning) {
         warningCares.push(care);
@@ -137,9 +131,101 @@ export class DashboardService {
       };
     });
   }
+
+  async getPresents(
+    { organizationId }: ICurrentAccount,
+    { type, amount }: PresentDto
+  ) {
+    const DATE_FORMAT = 'dd/MM/yyyy';
+
+    const [members, absences] = await Promise.all([
+      this.prisma.person.findMany({
+        where: {
+          organizationId,
+          type: PersonalType.Member
+        }
+      }),
+      this.prisma.absence.findMany({
+        where: {
+          organizationId
+        }
+      })
+    ]);
+
+    const groupedMembers: Record<string, any> = {};
+    const groupedAbsences: Record<string, any> = {};
+    members?.forEach((member) => {
+      if (!member.memberDay) {
+        return;
+      }
+
+      if (!groupedMembers[format(member.memberDay, DATE_FORMAT)]) {
+        groupedMembers[format(member.memberDay, DATE_FORMAT)] = [];
+      }
+
+      groupedMembers[format(member.memberDay, DATE_FORMAT)].push(member);
+    });
+
+    absences?.forEach((absence) => {
+      if (!groupedAbsences[format(absence.date, DATE_FORMAT)]) {
+        groupedAbsences[format(absence.date, DATE_FORMAT)] = [];
+      }
+
+      groupedAbsences[format(absence.date, DATE_FORMAT)].push(absence);
+    });
+
+    const historiesMap: Record<string, any> = {};
+    if (type === PresentReportType.Week) {
+      const week = startOfWeek(new Date());
+      const pastWeek = subWeeks(week, amount - 1);
+
+      const coordinateMember = await this.prisma.person.findMany({
+        where: {
+          organizationId,
+          type: PersonalType.Member,
+          memberDay: {
+            lte: pastWeek
+          }
+        }
+      });
+
+      eachDayOfInterval({
+        start: pastWeek,
+        end: new Date()
+      }).map((date) => {
+        if (!historiesMap[format(startOfWeek(date), DATE_FORMAT)]) {
+          historiesMap[format(startOfWeek(date), DATE_FORMAT)] = [];
+        }
+
+        historiesMap[format(startOfWeek(date), DATE_FORMAT)].push({
+          members: groupedMembers[format(date, DATE_FORMAT)] || [],
+          absences: groupedAbsences[format(date, DATE_FORMAT)] || []
+        });
+      });
+
+      let memberAmount = coordinateMember?.length || 0;
+      return Object.entries(historiesMap).map(
+        ([date, histories]: [string, any]) => {
+          let absenceAmount = 0;
+
+          histories?.forEach(({ members, absences }) => {
+
+            memberAmount += members?.length || 0;
+            absenceAmount += absences?.length || 0;
+          });
+
+          return {
+            date,
+            memberAmount,
+            absenceAmount
+          };
+        }
+      );
+    }
+  }
 }
 
-const getTitleByCareTimes = (careTimes: number = 0, index: number) => {
+const getTitleByCareTimes = (careTimes = 0, index: number) => {
   if (!careTimes) {
     return TopCaringTitle.NotGood;
   }

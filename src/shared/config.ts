@@ -51,9 +51,13 @@ export const AppConfig: IConfig = {
     ORGANIZATION_ID: process.env.ORGANIZATION_ID
   },
   AWS: {
-    ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
-    SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
-    REGION: process.env.AWS_REGION || '',
+    ACCESS_KEY_ID:
+      process.env.AWS_ACCESS_KEY_ID || process.env.MY_AWS_ACCESS_KEY_ID || '',
+    SECRET_ACCESS_KEY:
+      process.env.AWS_SECRET_ACCESS_KEY ||
+      process.env.MY_AWS_SECRET_ACCESS_KEY ||
+      '',
+    REGION: process.env.AWS_REGION || process.env.MY_AWS_REGION || '',
     COGNITO: {
       REGION: process.env.AWS_COGNITO_REGION,
       USER_POOL_ID: process.env.AWS_COGNITO_USER_POOL_ID,
