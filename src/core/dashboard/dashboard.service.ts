@@ -16,6 +16,7 @@ import {
 } from '../../shared/utils/date.util';
 import { PersonalType } from '../person/person.enum';
 import { eachDayOfInterval, format, startOfWeek, subWeeks } from 'date-fns';
+import { Role } from '../account/account.enum';
 
 @Injectable()
 export class DashboardService {
@@ -93,7 +94,12 @@ export class DashboardService {
     { set }: TopCaringPeopleDto
   ) {
     const [accounts, cares] = await Promise.all([
-      this.prisma.account.findMany({ where: { organizationId } }),
+      this.prisma.account.findMany({
+        where: {
+          organizationId,
+          role: { in: [Role.Pastor, Role.Deacon, Role.Staff] }
+        }
+      }),
       this.prisma.care.findMany({
         where: {
           organizationId,
