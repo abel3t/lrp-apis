@@ -16,7 +16,7 @@ export class CronJobService {
 
   private readonly logger = new Logger(CronJobService.name);
 
-  // @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: VietNamTimezone })
+  @Cron(CronExpression.EVERY_DAY_AT_9AM, { timeZone: VietNamTimezone })
   async reminderTodayBirthday() {
     const today = new Date();
     const todayDay = today.getDate();
@@ -62,7 +62,7 @@ export class CronJobService {
     this.logger.debug('Cronjob started at 9:00 AM', 'reminderTodayBirthday');
   }
 
-  // @Cron(CronExpression.EVERY_DAY_AT_9PM, { timeZone: VietNamTimezone })
+  @Cron(CronExpression.EVERY_DAY_AT_9PM, { timeZone: VietNamTimezone })
   async reminderTomorrowBirthday() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -106,7 +106,7 @@ export class CronJobService {
     this.logger.debug('Cronjob started at 9:00 PM', 'reminderTomorrowBirthday');
   }
 
-  // @Cron(EVERY_10TH_DAY_OF_MONTH_AT_9AM, { timeZone: VietNamTimezone })
+  @Cron(EVERY_10TH_DAY_OF_MONTH_AT_9AM, { timeZone: VietNamTimezone })
   async reminderQuarterBirthday() {
     const MONTHS_PER_QUARTER = 3;
     const END_DATE_OF_MONTH = 31;
