@@ -23,7 +23,7 @@ export class CronJobService {
     const todayMonth = today.getMonth() + 1;
 
     const members: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM "People"
+        SELECT * FROM "Person"
         WHERE 
           EXTRACT(DAY FROM "birthday") = ${todayDay}  
           AND EXTRACT(MONTH FROM "birthday") = ${todayMonth}
@@ -71,7 +71,7 @@ export class CronJobService {
     const tomorrowMonth = tomorrow.getMonth() + 1;
 
     const members: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM "People"
+        SELECT * FROM "Person"
         WHERE 
           EXTRACT(DAY FROM "birthday") = ${tomorrowDay}  
           AND EXTRACT(MONTH FROM "birthday") = ${tomorrowMonth}
@@ -124,7 +124,7 @@ export class CronJobService {
     }
 
     const members: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM "People"
+        SELECT * FROM "Person"
         WHERE 
           EXTRACT(DAY FROM "birthday") <= ${END_DATE_OF_MONTH}  
           AND EXTRACT(MONTH FROM "birthday") <= ${currentMonth}
