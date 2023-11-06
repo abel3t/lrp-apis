@@ -141,7 +141,8 @@ export class AbsenceService {
       }),
       this.prisma.absence.findMany({
         where: {
-          organizationId
+          organizationId,
+          personId: memberId
         }
       })
     ]);
