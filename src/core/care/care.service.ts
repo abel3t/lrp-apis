@@ -84,6 +84,8 @@ export class CareService {
       ? { connect: { id: body.member.id } }
       : undefined;
 
+    delete body.member;
+
     await this.prisma.care.update({
       where: { id: careId },
       data: { ...body, person: member, updatedBy: accountId }

@@ -54,7 +54,7 @@ model Account {
   absences  Absence[]
   disciples Disciple[]
 
-  @@index([isDeleted])
+  @@index([organizationId, isDeleted])
 }
 
 model Person {
@@ -105,7 +105,7 @@ model Person {
 
   isDeleted Boolean @default(false)
 
-  @@index([isDeleted])
+  @@index([organizationId, curatorId, isDeleted])
 }
 
 model Group {
@@ -124,7 +124,7 @@ model Group {
 
   isDeleted Boolean @default(false)
 
-  @@index([isDeleted])
+  @@index([organizationId, isDeleted])
 }
 
 model Care {
@@ -148,7 +148,7 @@ model Care {
 
   isDeleted Boolean @default(false)
 
-  @@index([isDeleted])
+  @@index([organizationId, curatorId, personId, date, isDeleted])
 }
 
 model GroupsMembers {
@@ -185,7 +185,7 @@ model Absence {
 
   isDeleted Boolean @default(false)
 
-  @@index([isDeleted])
+  @@index([organizationId, personId, date, isDeleted])
 }
 
 model Disciple {
@@ -209,5 +209,5 @@ model Disciple {
 
   isDeleted Boolean @default(false)
 
-  @@index([isDeleted])
+  @@index([organizationId, curatorId, date, isDeleted])
 }
