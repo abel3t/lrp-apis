@@ -68,6 +68,7 @@ export const getFromDateFilter = (set: number = 0) => {
   const monthOfStartPeriod = Math.floor(newDate.getMonth() / 2) * 2;
 
   newDate.setMonth(monthOfStartPeriod);
+  newDate.setDate(1);
 
   return newDate;
 };
