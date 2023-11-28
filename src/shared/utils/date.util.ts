@@ -64,7 +64,12 @@ export const getFromDateFilter = (set: number = 0) => {
     return subtractUtcMonth(getUtcStartDate(), DefaultMonth + 12);
   }
 
-  return subtractUtcMonth(getUtcStartDate(), DefaultMonth);
+  const newDate = new Date();
+  const monthOfStartPeriod = Math.floor(newDate.getMonth() / 2) * 2;
+
+  newDate.setMonth(monthOfStartPeriod);
+
+  return newDate;
 };
 
 export const getBirthday = (date: Date | string) => {
