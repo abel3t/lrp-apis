@@ -24,8 +24,14 @@ export class AppController {
 
     const sharpify = async () => {
       try {
+        const fileTypePattern = /\.[0-9a-z]+$/i;
+
         let fileBuffer = await data.fields.file.toBuffer();
-        if (data.mimetype === 'image/heic') {
+
+        if (
+          data.mimetype === 'image/heic' ||
+          data.filename.match(fileTypePattern)?.[0]?.toLowerCase() === '.heic'
+        ) {
           fileBuffer = await heicConvert({
             buffer: fileBuffer as any,
             format: 'JPEG',
