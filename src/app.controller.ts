@@ -1,4 +1,4 @@
-import { Controller, Header, Post, Req, Res } from '@nestjs/common';
+import { Controller, Header, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { S3Service } from './shared/services/s3.service';
 import * as sharp from 'sharp';
 import * as heicConvert from 'heic-convert';
@@ -6,6 +6,7 @@ import {
   CurrentAccount,
   ICurrentAccount
 } from './decorators/account.decorator';
+import { AuthGuard } from 'guards/auth.guard';
 
 @Controller()
 export class AppController {
