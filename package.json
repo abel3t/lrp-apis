@@ -8,8 +8,6 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "predev": "prisma migrate dev",
-    "prestart:dev": "prisma migrate dev",
-    "prestart": "prisma migrate deploy",
     "prestart:prod": "prisma migrate deploy",
     "build": "nest build",
     "format": "prettier --write .",
